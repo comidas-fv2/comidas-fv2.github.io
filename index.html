@@ -1,0 +1,1152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a2a4a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Comidas — Rama Fuquay-Varina 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    /* ══════════════════════════════════════════════════════
+       RESET & BASE
+    ══════════════════════════════════════════════════════ */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    :root {
+      --navy:   #1a2a4a;
+      --gold:   #c8a96e;
+      --steel:  #2e5f8a;
+      --lgold:  #e8d5a0;
+      --dteal:  #1a4a3a;
+      --mint:   #a8e0c8;
+      --mauve:  #6d2b4e;
+      --pink:   #e8b4cc;
+      --indigo: #3d2b6d;
+      --lavend: #c8b8f0;
+      --burg:   #7a1a3a;
+      --blush:  #f0c0c8;
+      --teal:   #134f5c;
+      --cyan:   #a8dde5;
+      --gray:   #888;
+      --light:  #f4f6fa;
+      --white:  #ffffff;
+      --radius: 14px;
+      --shadow: 0 4px 24px rgba(26,42,74,0.13);
+    }
+
+    html, body {
+      height: 100%;
+      background: var(--light);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--navy);
+      overflow-x: hidden;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       LAYOUT
+    ══════════════════════════════════════════════════════ */
+    .app {
+      max-width: 430px;
+      margin: 0 auto;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--white);
+      box-shadow: 0 0 40px rgba(0,0,0,0.08);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       HEADER
+    ══════════════════════════════════════════════════════ */
+    .header {
+      background: var(--navy);
+      padding: 20px 20px 18px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.1);
+      border: none;
+      color: var(--gold);
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      flex-shrink: 0;
+      transition: background 0.2s;
+      display: none;
+    }
+
+    .back-btn.visible { display: flex; }
+    .back-btn:active { background: rgba(255,255,255,0.2); }
+
+    .header-text { flex: 1; }
+
+    .header-branch {
+      color: rgba(200,169,110,0.7);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .header-title {
+      color: var(--white);
+      font-family: 'DM Serif Display', serif;
+      font-size: 20px;
+      line-height: 1.2;
+    }
+
+    .header-subtitle {
+      color: var(--gold);
+      font-size: 12px;
+      font-weight: 500;
+      margin-top: 2px;
+      min-height: 16px;
+      transition: opacity 0.3s;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       STEP INDICATOR
+    ══════════════════════════════════════════════════════ */
+    .steps {
+      display: flex;
+      gap: 4px;
+      padding: 0 20px 16px;
+      background: var(--navy);
+    }
+
+    .step-dot {
+      flex: 1;
+      height: 3px;
+      border-radius: 2px;
+      background: rgba(255,255,255,0.2);
+      transition: background 0.3s;
+    }
+
+    .step-dot.active { background: var(--gold); }
+    .step-dot.done   { background: rgba(200,169,110,0.5); }
+
+    /* ══════════════════════════════════════════════════════
+       SCREENS
+    ══════════════════════════════════════════════════════ */
+    .screen {
+      display: none;
+      flex: 1;
+      padding: 20px 16px 32px;
+      animation: slideIn 0.25s ease;
+    }
+
+    .screen.active { display: block; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(24px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    .screen-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+      letter-spacing: 0.2px;
+    }
+
+    .screen-sub {
+      font-size: 13px;
+      color: var(--gray);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       SCREEN 1 — GROUP SELECTION
+    ══════════════════════════════════════════════════════ */
+    .group-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .group-btn {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 18px;
+      border-radius: var(--radius);
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      text-align: left;
+      transition: transform 0.15s, box-shadow 0.15s;
+      box-shadow: var(--shadow);
+    }
+
+    .group-btn:active { transform: scale(0.98); }
+
+    .group-swatch {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .group-info { flex: 1; }
+
+    .group-name {
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .group-desc {
+      font-size: 12px;
+      margin-top: 2px;
+      opacity: 0.75;
+    }
+
+    .group-arrow {
+      font-size: 18px;
+      opacity: 0.5;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       SCREEN 2 — CALENDAR
+    ══════════════════════════════════════════════════════ */
+    .cal-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .cal-month {
+      font-size: 17px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+
+    .cal-nav-btn {
+      background: var(--light);
+      border: none;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      color: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+
+    .cal-nav-btn:active { background: #dde4f0; }
+    .cal-nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+    .cal-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+    }
+
+    .cal-dow {
+      text-align: center;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--gray);
+      padding: 6px 0;
+      letter-spacing: 0.5px;
+    }
+
+    .cal-day {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      position: relative;
+      transition: transform 0.12s;
+    }
+
+    .cal-day:active { transform: scale(0.92); }
+
+    /* Empty cell */
+    .cal-day.empty { pointer-events: none; }
+
+    /* Past date */
+    .cal-day.past {
+      color: #ccc;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    /* Available */
+    .cal-day.available {
+      background: var(--group-color, var(--navy));
+      color: var(--group-fg, var(--gold));
+    }
+
+    /* Booked — gray with X */
+    .cal-day.booked {
+      background: #e8eaf0;
+      color: #aaa;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    .cal-day.booked::after {
+      content: '✕';
+      position: absolute;
+      font-size: 10px;
+      bottom: 3px;
+      right: 4px;
+      color: #bbb;
+    }
+
+    /* Today indicator */
+    .cal-day.today::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    /* Loading skeleton */
+    .cal-day.loading {
+      background: #eee;
+      animation: pulse 1.2s infinite;
+      pointer-events: none;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0.5; }
+    }
+
+    .cal-legend {
+      display: flex;
+      gap: 16px;
+      margin-top: 16px;
+      padding: 12px 14px;
+      background: var(--light);
+      border-radius: 10px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--gray);
+    }
+
+    .legend-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       SCREEN 3 — TIME SLOTS
+    ══════════════════════════════════════════════════════ */
+    .selected-date-display {
+      background: var(--light);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .selected-date-icon { font-size: 20px; }
+
+    .selected-date-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--navy);
+      text-transform: capitalize;
+    }
+
+    .time-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .time-btn {
+      width: 100%;
+      padding: 18px;
+      border-radius: var(--radius);
+      border: 2px solid transparent;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s;
+      background: var(--light);
+      color: var(--navy);
+    }
+
+    .time-btn.available {
+      border-color: var(--group-color, var(--navy));
+      color: var(--group-color, var(--navy));
+      background: var(--white);
+    }
+
+    .time-btn.available:active {
+      background: var(--group-color, var(--navy));
+      color: var(--group-fg, var(--gold));
+    }
+
+    .time-btn.booked {
+      background: #f0f0f0;
+      color: #bbb;
+      border-color: #e0e0e0;
+      pointer-events: none;
+      position: relative;
+    }
+
+    .time-btn.booked::after {
+      content: '✕ Reservado';
+      position: absolute;
+      right: 16px;
+      font-size: 12px;
+      color: #bbb;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       SCREEN 4 — FORM
+    ══════════════════════════════════════════════════════ */
+    .booking-summary {
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      margin-bottom: 20px;
+    }
+
+    .booking-summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+    }
+
+    .bs-key {
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 0.7;
+    }
+
+    .bs-val {
+      font-size: 13px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .field {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 8px;
+      letter-spacing: 0.2px;
+    }
+
+    label .req { color: #c0392b; margin-left: 2px; }
+    label .opt { color: var(--gray); font-weight: 400; font-size: 12px; margin-left: 4px; }
+
+    input[type="text"],
+    input[type="tel"],
+    input[type="email"],
+    textarea {
+      width: 100%;
+      padding: 15px 16px;
+      border: 2px solid #dde4f0;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 16px;
+      color: var(--navy);
+      background: var(--light);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+
+    input:focus, textarea:focus {
+      border-color: var(--group-color, var(--navy));
+      box-shadow: 0 0 0 3px rgba(26,42,74,0.08);
+      background: var(--white);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.12s, opacity 0.2s;
+      margin-top: 8px;
+      letter-spacing: 0.3px;
+    }
+
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+    .error-box {
+      background: #fdf0f0;
+      border: 1px solid #f0c0c0;
+      border-radius: 12px;
+      padding: 14px 16px;
+      color: #c0392b;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .error-box.visible { display: block; }
+
+    /* ══════════════════════════════════════════════════════
+       SCREEN 5 — SUCCESS
+    ══════════════════════════════════════════════════════ */
+    .success-wrap {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .success-icon {
+      font-size: 72px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .success-title {
+      font-family: 'DM Serif Display', serif;
+      font-size: 28px;
+      color: var(--navy);
+      margin-bottom: 10px;
+    }
+
+    .success-msg {
+      font-size: 15px;
+      color: var(--gray);
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .success-card {
+      border-radius: var(--radius);
+      padding: 18px;
+      text-align: left;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .success-card-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      opacity: 0.7;
+    }
+
+    .success-detail {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.15);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .success-detail:last-child { border-bottom: none; }
+
+    .success-note {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.6;
+      background: var(--light);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      border: 2.5px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 8px;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ── HEADER ── -->
+  <div class="header">
+    <div class="header-top">
+      <button class="back-btn" id="backBtn" onclick="goBack()">‹</button>
+      <div class="header-text">
+        <div class="header-branch">Rama Fuquay-Varina 2</div>
+        <div class="header-title">Comidas para los Misioneros</div>
+        <div class="header-subtitle" id="headerSub"></div>
+      </div>
+    </div>
+    <div class="steps" id="stepDots">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+      <div class="step-dot" id="dot4"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       SCREEN 1 — SELECT GROUP
+  ══════════════════════════════════════════════════ -->
+  <div class="screen active" id="s1">
+    <p class="screen-title">¿A quién desea invitar?</p>
+    <p class="screen-sub">Seleccione el grupo de misioneros para ver las fechas disponibles.</p>
+    <div class="group-list" id="groupList"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       SCREEN 2 — CALENDAR
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="s2">
+    <div class="cal-nav">
+      <button class="cal-nav-btn" id="prevMonth" onclick="changeMonth(-1)">‹</button>
+      <div class="cal-month" id="calMonth"></div>
+      <button class="cal-nav-btn" id="nextMonth" onclick="changeMonth(1)">›</button>
+    </div>
+    <div class="cal-grid" id="calGrid"></div>
+    <div class="cal-legend">
+      <div class="legend-item">
+        <div class="legend-dot" id="legendAvail" style="background:var(--navy)"></div>
+        <span>Disponible</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#e8eaf0;border:1px solid #ccc"></div>
+        <span>Reservado</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-dot" style="background:#ddd"></div>
+        <span>No disponible</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       SCREEN 3 — TIME SLOTS
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="s3">
+    <div class="selected-date-display">
+      <span class="selected-date-icon">📅</span>
+      <span class="selected-date-text" id="selectedDateDisplay"></span>
+    </div>
+    <p class="screen-title">Seleccione la hora</p>
+    <p class="screen-sub">Escoja la hora a la que prefiere servir la comida.</p>
+    <div class="time-grid" id="timeGrid"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       SCREEN 4 — FORM
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="s4">
+    <div class="booking-summary" id="bookingSummary"></div>
+
+    <div class="error-box" id="errorBox"></div>
+
+    <div class="field">
+      <label>Nombre de la familia <span class="req">*</span></label>
+      <input type="text" id="fNombre" placeholder="Apellido de la familia" autocomplete="family-name">
+    </div>
+    <div class="field">
+      <label>Teléfono <span class="req">*</span></label>
+      <input type="tel" id="fTelefono" placeholder="(919) 000-0000" autocomplete="tel">
+    </div>
+    <div class="field">
+      <label>Correo electrónico <span class="opt">(opcional)</span></label>
+      <input type="email" id="fEmail" placeholder="para recibir confirmación" autocomplete="email">
+    </div>
+    <div class="field">
+      <label>Notas <span class="opt">(opcional)</span></label>
+      <textarea id="fNotas" placeholder="Instrucciones de entrega, alergias, etc."></textarea>
+    </div>
+
+    <button class="submit-btn" id="submitBtn" onclick="submitBooking()">
+      Confirmar comida
+    </button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════
+       SCREEN 5 — SUCCESS
+  ══════════════════════════════════════════════════ -->
+  <div class="screen" id="s5">
+    <div class="success-wrap">
+      <span class="success-icon">🙏</span>
+      <div class="success-title">¡Gracias!</div>
+      <div class="success-msg" id="successMsg"></div>
+      <div class="success-card" id="successCard"></div>
+      <div class="success-note">
+        Los misioneros les llamarán para confirmar antes de la comida.<br><br>
+        Si necesita hacer cambios, comuníquese con Ave al<br>
+        <strong>(919) 538-0776</strong>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app -->
+
+<script>
+/* ════════════════════════════════════════════════════════════
+   CONFIGURATION
+   ════════════════════════════════════════════════════════════
+
+   TO ACTIVATE A GROUP:   remove the // at the start of its line
+   TO DEACTIVATE A GROUP: add // at the start of its line
+
+   TRANSFER DAY EXAMPLES:
+   • New Garner Sisters arrive → remove // from hermanas_garner line
+   • Companionship leaves     → add // back to their line
+*/
+
+const GROUPS = [
+  { id: 'elderes',          label: 'Élderes',              desc: 'Una companía de Élderes',         icon: '👔', bg: '#1a2a4a', fg: '#c8a96e' },
+  { id: 'elderes_fv',       label: 'Élderes FV',           desc: 'Élderes de Fuquay-Varina',        icon: '👔', bg: '#1a2a4a', fg: '#c8a96e' },
+  { id: 'elderes_garner',   label: 'Élderes Garner',       desc: 'Élderes que viven en Garner',     icon: '👔', bg: '#2e5f8a', fg: '#e8d5a0' },
+// { id: 'todos_elderes',   label: 'Todos los Élderes',    desc: 'Las dos companías de Élderes',    icon: '👔', bg: '#1a4a3a', fg: '#a8e0c8' },
+  { id: 'hermanas',         label: 'Hermanas',             desc: 'Una companía de Hermanas',        icon: '✝️', bg: '#6d2b4e', fg: '#e8b4cc' },
+  { id: 'hermanas_fv',      label: 'Hermanas FV',          desc: 'Hermanas de Fuquay-Varina',       icon: '✝️', bg: '#6d2b4e', fg: '#e8b4cc' },
+// { id: 'hermanas_garner', label: 'Hermanas Garner',      desc: 'Hermanas que viven en Garner',    icon: '✝️', bg: '#3d2b6d', fg: '#c8b8f0' },
+// { id: 'todas_hermanas',  label: 'Todas las Hermanas',   desc: 'Las dos companías de Hermanas',   icon: '✝️', bg: '#7a1a3a', fg: '#f0c0c8' },
+  { id: 'todos_misioneros', label: 'Todos los Misioneros', desc: 'Todos los misioneros juntos',     icon: '⭐', bg: '#134f5c', fg: '#a8dde5' },
+];
+
+// ── Time slots available every day ────────────────────────
+const TIME_SLOTS = [
+  '3:00 pm','3:30 pm','4:00 pm','4:30 pm',
+  '5:00 pm','5:30 pm','6:00 pm','6:30 pm',
+  '7:00 pm','7:30 pm',
+];
+
+// ── API endpoint — paste your Google Apps Script URL here after deploying ──
+// It will look like: https://script.google.com/macros/s/XXXXX/exec
+const API_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+/* ════════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════════ */
+let state = {
+  step:        1,
+  group:       null,
+  calYear:     new Date().getFullYear(),
+  calMonth:    new Date().getMonth(),
+  bookedDates: new Set(), // "YYYY-MM-DD" strings
+  bookedSlots: {},        // { "YYYY-MM-DD": ["3:00 pm", ...] }
+  selDate:     null,
+  selTime:     null,
+};
+
+const MESES_ES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio',
+                  'Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIAS_ES  = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const DIAS_LONG = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const MESES_LONG = ['enero','febrero','marzo','abril','mayo','junio',
+                    'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════════ */
+window.addEventListener('DOMContentLoaded', () => {
+  buildGroupList();
+  updateStepDots(1);
+});
+
+/* ════════════════════════════════════════════════════════════
+   SCREEN 1 — GROUPS
+════════════════════════════════════════════════════════════ */
+function buildGroupList() {
+  const el = document.getElementById('groupList');
+  el.innerHTML = '';
+  GROUPS.forEach(g => {
+    const btn = document.createElement('button');
+    btn.className = 'group-btn';
+    btn.style.background = g.bg;
+    btn.style.color = g.fg;
+    btn.innerHTML = `
+      <div class="group-swatch" style="background:rgba(255,255,255,0.12)">${g.icon}</div>
+      <div class="group-info">
+        <div class="group-name" style="color:${g.fg}">${g.label}</div>
+        <div class="group-desc" style="color:${g.fg}">${g.desc}</div>
+      </div>
+      <div class="group-arrow" style="color:${g.fg}">›</div>
+    `;
+    btn.onclick = () => selectGroup(g);
+    el.appendChild(btn);
+  });
+}
+
+async function selectGroup(g) {
+  state.group = g;
+  state.calYear  = new Date().getFullYear();
+  state.calMonth = new Date().getMonth();
+  state.bookedDates = new Set();
+  state.bookedSlots = {};
+  state.selDate = null;
+  state.selTime = null;
+
+  // Apply group color CSS variables
+  document.documentElement.style.setProperty('--group-color', g.bg);
+  document.documentElement.style.setProperty('--group-fg',    g.fg);
+  document.getElementById('legendAvail').style.background = g.bg;
+  document.getElementById('headerSub').textContent = g.label;
+  document.getElementById('headerSub').style.color = g.fg;
+
+  goTo(2);
+  await loadBookedDates();
+  renderCalendar();
+}
+
+/* ════════════════════════════════════════════════════════════
+   LOAD BOOKED DATES FROM API
+════════════════════════════════════════════════════════════ */
+async function loadBookedDates() {
+  if (!API_URL || API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+    // Demo mode — no real bookings
+    return;
+  }
+  try {
+    const res  = await fetch(`${API_URL}?action=booked&group=${state.group.id}`);
+    const data = await res.json();
+    state.bookedDates = new Set(data.bookedDates || []);
+    state.bookedSlots = data.bookedSlots || {};
+  } catch (err) {
+    console.warn('Could not load booked dates:', err);
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   SCREEN 2 — CALENDAR
+════════════════════════════════════════════════════════════ */
+function renderCalendar() {
+  const today    = new Date();
+  today.setHours(0,0,0,0);
+  const firstDay = new Date(state.calYear, state.calMonth, 1);
+  const lastDay  = new Date(state.calYear, state.calMonth + 1, 0);
+  const startDow = firstDay.getDay(); // 0=Sun
+
+  document.getElementById('calMonth').textContent =
+    `${MESES_ES[state.calMonth]} ${state.calYear}`;
+
+  // Prev/next nav
+  const prevBtn = document.getElementById('prevMonth');
+  const nowM = new Date(); nowM.setDate(1); nowM.setHours(0,0,0,0);
+  const thisM = new Date(state.calYear, state.calMonth, 1);
+  prevBtn.disabled = thisM <= nowM;
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  // Day-of-week headers
+  DIAS_ES.forEach(d => {
+    const cell = document.createElement('div');
+    cell.className = 'cal-dow';
+    cell.textContent = d;
+    grid.appendChild(cell);
+  });
+
+  // Empty cells before first day
+  for (let i = 0; i < startDow; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cal-day empty';
+    grid.appendChild(cell);
+  }
+
+  // Day cells
+  for (let d = 1; d <= lastDay.getDate(); d++) {
+    const date    = new Date(state.calYear, state.calMonth, d);
+    const dateStr = toDateStr(date);
+    const isPast  = date < today;
+    const isToday = date.getTime() === today.getTime();
+    const isBooked = state.bookedDates.has(dateStr);
+
+    const cell = document.createElement('button');
+    cell.textContent = d;
+
+    if (isPast) {
+      cell.className = 'cal-day past';
+    } else if (isBooked) {
+      cell.className = 'cal-day booked';
+    } else {
+      cell.className = 'cal-day available';
+      if (isToday) cell.classList.add('today');
+      cell.onclick = () => selectDate(date, dateStr);
+    }
+
+    grid.appendChild(cell);
+  }
+}
+
+function changeMonth(dir) {
+  state.calMonth += dir;
+  if (state.calMonth < 0)  { state.calMonth = 11; state.calYear--; }
+  if (state.calMonth > 11) { state.calMonth = 0;  state.calYear++; }
+  renderCalendar();
+}
+
+function toDateStr(date) {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2,'0');
+  const d = String(date.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   SCREEN 3 — TIME SLOTS
+════════════════════════════════════════════════════════════ */
+function selectDate(date, dateStr) {
+  state.selDate = { date, dateStr };
+  const dow  = date.getDay();
+  const day  = date.getDate();
+  const mon  = date.getMonth();
+  const disp = `${DIAS_LONG[dow]}, ${day} de ${MESES_LONG[mon]}`;
+
+  document.getElementById('selectedDateDisplay').textContent = disp;
+
+  const bookedSlots = state.bookedSlots[dateStr] || [];
+  const grid = document.getElementById('timeGrid');
+  grid.innerHTML = '';
+
+  TIME_SLOTS.forEach(slot => {
+    const btn = document.createElement('button');
+    btn.className = 'time-btn';
+    btn.textContent = slot;
+    const isBooked = bookedSlots.includes(slot);
+    if (isBooked) {
+      btn.classList.add('booked');
+    } else {
+      btn.classList.add('available');
+      btn.style.setProperty('--group-color', state.group.bg);
+      btn.style.setProperty('--group-fg',    state.group.fg);
+      btn.onclick = () => selectTime(slot);
+    }
+    grid.appendChild(btn);
+  });
+
+  goTo(3);
+}
+
+/* ════════════════════════════════════════════════════════════
+   SCREEN 4 — FORM
+════════════════════════════════════════════════════════════ */
+function selectTime(slot) {
+  state.selTime = slot;
+
+  const g   = state.group;
+  const d   = state.selDate;
+  const dow = d.date.getDay();
+
+  // Summary card
+  const summary = document.getElementById('bookingSummary');
+  summary.style.background = g.bg;
+  summary.style.color = g.fg;
+  summary.innerHTML = `
+    <div class="booking-summary-row">
+      <span class="bs-key">Grupo</span>
+      <span class="bs-val">${g.label}</span>
+    </div>
+    <div class="booking-summary-row">
+      <span class="bs-key">Fecha</span>
+      <span class="bs-val" style="text-transform:capitalize">${DIAS_LONG[dow]}, ${d.date.getDate()} de ${MESES_LONG[d.date.getMonth()]}</span>
+    </div>
+    <div class="booking-summary-row">
+      <span class="bs-key">Hora</span>
+      <span class="bs-val">${slot}</span>
+    </div>
+  `;
+
+  // Style the submit button
+  const btn = document.getElementById('submitBtn');
+  btn.style.background = g.bg;
+  btn.style.color = g.fg;
+
+  goTo(4);
+}
+
+/* ════════════════════════════════════════════════════════════
+   SUBMIT
+════════════════════════════════════════════════════════════ */
+async function submitBooking() {
+  const nombre   = document.getElementById('fNombre').value.trim();
+  const telefono = document.getElementById('fTelefono').value.trim();
+  const email    = document.getElementById('fEmail').value.trim();
+  const notas    = document.getElementById('fNotas').value.trim();
+  const errorBox = document.getElementById('errorBox');
+
+  errorBox.classList.remove('visible');
+
+  if (!nombre) {
+    showError('Por favor ingrese el apellido de su familia.'); return;
+  }
+  if (!telefono) {
+    showError('Por favor ingrese su número de teléfono.'); return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Enviando...';
+
+  const payload = {
+    action:    'book',
+    group:     state.group.id,
+    groupLabel: state.group.label,
+    date:      state.selDate.dateStr,
+    time:      state.selTime,
+    nombre,
+    telefono,
+    email,
+    notas,
+  };
+
+  try {
+    let result;
+    if (!API_URL || API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+      // Demo mode
+      result = { success: true };
+    } else {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        body:   JSON.stringify(payload),
+      });
+      result = await res.json();
+    }
+
+    if (result.success) {
+      showSuccess(nombre, payload);
+    } else {
+      showError(result.error || 'Hubo un error. Intente de nuevo.');
+      btn.disabled = false;
+      btn.innerHTML = 'Confirmar comida';
+    }
+  } catch (err) {
+    showError('Error de conexión. Por favor intente de nuevo.');
+    btn.disabled = false;
+    btn.innerHTML = 'Confirmar comida';
+  }
+}
+
+function showError(msg) {
+  const box = document.getElementById('errorBox');
+  box.textContent = msg;
+  box.classList.add('visible');
+  box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function showSuccess(nombre, p) {
+  const g   = state.group;
+  const dow = state.selDate.date.getDay();
+
+  document.getElementById('successMsg').textContent =
+    `La comida de la familia ${nombre} con ${g.label} ha sido confirmada. ¡Que Dios les bendiga!`;
+
+  const card = document.getElementById('successCard');
+  card.style.background = g.bg;
+  card.style.color = g.fg;
+  card.innerHTML = `
+    <div class="success-card-label" style="color:${g.fg}">${g.label}</div>
+    <div class="success-detail">📅 <span style="text-transform:capitalize">${DIAS_LONG[dow]}, ${state.selDate.date.getDate()} de ${MESES_LONG[state.selDate.date.getMonth()]}</span></div>
+    <div class="success-detail">🕐 ${p.time}</div>
+    <div class="success-detail">👨‍👩‍👧 Familia ${nombre}</div>
+    <div class="success-detail">📞 ${p.telefono}</div>
+  `;
+
+  goTo(5);
+}
+
+/* ════════════════════════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════════════════════════ */
+function goTo(step) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(`s${step}`).classList.add('active');
+  state.step = step;
+  updateStepDots(step);
+
+  const backBtn = document.getElementById('backBtn');
+  backBtn.classList.toggle('visible', step > 1 && step < 5);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goBack() {
+  if (state.step > 1) goTo(state.step - 1);
+}
+
+function updateStepDots(step) {
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById(`dot${i}`);
+    if (i < step)       dot.className = 'step-dot done';
+    else if (i === step) dot.className = 'step-dot active';
+    else                dot.className = 'step-dot';
+  }
+  // Hide dots on success screen
+  document.getElementById('stepDots').style.opacity = step === 5 ? '0' : '1';
+}
+</script>
+</body>
+</html>
