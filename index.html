@@ -361,7 +361,6 @@
     .date-banner-text {
       font-size: 15px;
       font-weight: 600;
-      text-transform: capitalize;
     }
 
     .time-grid {
@@ -933,14 +932,20 @@ function toDateStr(date) {
   return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
 }
 
-function pad(n) { return String(n).padStart(2,'0'); }
+function capFirst(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function formatDateDisplay(date) {
+  return `${capFirst(DIAS_LONG[date.getDay()])}, ${date.getDate()} de ${MESES_LONG[date.getMonth()]}`;
+}
 
 /* ════════════════════════════════════════════════════════
    SCREEN 3 — TIME SLOTS
 ════════════════════════════════════════════════════════ */
 function selectDate(date, dateStr) {
   state.selDate = { date, dateStr };
-  const disp = `${DIAS_LONG[date.getDay()]}, ${date.getDate()} de ${MESES_LONG[date.getMonth()]}`;
+  const disp = formatDateDisplay(date);
   document.getElementById('dateBannerText').textContent = disp;
 
   const booked = state.bookedSlots[dateStr] || [];
@@ -971,11 +976,11 @@ function selectTime(slot) {
   state.selTime = slot;
   const d   = state.selDate;
   const dow = d.date.getDay();
-  const banner = `${DIAS_LONG[dow]}, ${d.date.getDate()} de ${MESES_LONG[d.date.getMonth()]} — ${slot}`;
+  const banner = `${formatDateDisplay(d.date)} — ${slot}`;
   document.getElementById('recurBannerText').textContent = banner;
 
   const opts = document.getElementById('recurOpts');
-  opts.innerHTML = '';
+  while (opts.firstChild) opts.removeChild(opts.firstChild);
   RECUR_OPTIONS.forEach(o => {
     const btn = document.createElement('button');
     btn.className = 'recur-btn';
@@ -996,15 +1001,14 @@ function selectRecur(weeks) {
   state.selWeeks = weeks;
   const g   = state.group;
   const d   = state.selDate;
-  const dow = d.date.getDay();
-  const dateDisp = `${DIAS_LONG[dow]}, ${d.date.getDate()} de ${MESES_LONG[d.date.getMonth()]}`;
+  const dateDisp = formatDateDisplay(d.date);
 
   const summary = document.getElementById('bookingSummary');
   summary.style.background = g.bg;
   summary.style.color      = g.fg;
   summary.innerHTML = `
     <div class="bs-row"><span class="bs-key">Grupo</span><span class="bs-val">${g.label}</span></div>
-    <div class="bs-row"><span class="bs-key">Primera fecha</span><span class="bs-val" style="text-transform:capitalize">${dateDisp}</span></div>
+    <div class="bs-row"><span class="bs-key">Primera fecha</span><span class="bs-val">${dateDisp}</span></div>
     <div class="bs-row"><span class="bs-key">Hora</span><span class="bs-val">${state.selTime}</span></div>
     <div class="bs-row"><span class="bs-key">Semanas</span><span class="bs-val">${weeks === 1 ? 'Solo esta fecha' : `${weeks} semanas`}</span></div>
   `;
@@ -1076,8 +1080,7 @@ function showError(msg) {
 
 function showSuccess(nombre, p) {
   const g   = state.group;
-  const dow = state.selDate.date.getDay();
-  const dateDisp = `${DIAS_LONG[dow]}, ${state.selDate.date.getDate()} de ${MESES_LONG[state.selDate.date.getMonth()]}`;
+  const dateDisp = formatDateDisplay(state.selDate.date);
   const weeksNote = p.weeks > 1 ? ` por ${p.weeks} semanas` : '';
 
   document.getElementById('successMsg').textContent =
@@ -1088,9 +1091,9 @@ function showSuccess(nombre, p) {
   card.style.color      = g.fg;
   card.innerHTML = `
     <div class="success-card-label" style="color:${g.fg}">${g.label}</div>
-    <div class="success-row">📅 <span style="text-transform:capitalize">${dateDisp}</span></div>
+    <div class="success-row">📅 <span>${dateDisp}</span></div>
     <div class="success-row">🕐 ${p.time}</div>
-    ${p.weeks > 1 ? `<div class="success-row">🔁 ${p.weeks} semanas — cada ${DIAS_LONG[dow]}</div>` : ''}
+    ${p.weeks > 1 ? `<div class="success-row">🔁 ${p.weeks} semanas — cada ${capFirst(DIAS_LONG[state.selDate.date.getDay()])}</div>` : ''}
     <div class="success-row">👨‍👩‍👧 Familia ${nombre}</div>
     <div class="success-row">📞 ${p.telefono}</div>
   `;
