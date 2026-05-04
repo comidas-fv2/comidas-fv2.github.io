@@ -229,6 +229,9 @@
       align-items: center;
       justify-content: space-between;
       margin-bottom: 14px;
+      background: var(--light);
+      border-radius: 12px;
+      padding: 10px 12px;
     }
 
     .cal-month {
@@ -237,21 +240,35 @@
     }
 
     .cal-nav-btn {
-      background: var(--light);
-      border: none;
-      width: 36px;
-      height: 36px;
+      background: var(--white);
+      border: 2px solid #dde4f0;
+      width: 42px;
+      height: 42px;
       border-radius: 50%;
-      font-size: 18px;
+      font-size: 22px;
       cursor: pointer;
       color: var(--navy);
       display: flex;
       align-items: center;
       justify-content: center;
       transition: background 0.15s;
+      font-weight: 700;
     }
     .cal-nav-btn:active   { background: #dde4f0; }
     .cal-nav-btn:disabled { opacity: 0.25; cursor: default; }
+
+    .cal-next-hint {
+      text-align: center;
+      font-size: 13px;
+      color: var(--group-color, var(--navy));
+      font-weight: 600;
+      margin-top: 10px;
+      padding: 8px;
+      background: var(--light);
+      border-radius: 8px;
+      display: none;
+    }
+    .cal-next-hint.visible { display: block; }
 
     .cal-grid {
       display: grid;
@@ -557,7 +574,6 @@
 
     .success-msg {
       font-size: 16px;
-      font-weight: 500;
       color: var(--gray);
       line-height: 1.6;
       margin-bottom: 20px;
@@ -594,7 +610,6 @@
 
     .success-note {
       font-size: 16px;
-      font-weight: 500;
       color: var(--gray);
       line-height: 1.7;
       background: var(--light);
@@ -668,6 +683,9 @@
         <span>Pasado</span>
       </div>
     </div>
+    <div class="cal-next-hint" id="calNextHint">
+      👉 ¿No ve su fecha? Toque ›  para ver el próximo mes
+    </div>
   </div>
 
   <!-- ══ SCREEN 3 — TIME SLOTS ══ -->
@@ -697,8 +715,8 @@
     <div class="booking-summary" id="bookingSummary"></div>
     <div class="error-box" id="errorBox"></div>
     <div class="field">
-      <label>Nombre de la familia <span class="req">*</span></label>
-      <input type="text" id="fNombre" placeholder="Apellido de la familia" autocomplete="family-name">
+      <label>Apellido de la familia <span class="req">*</span></label>
+      <input type="text" id="fNombre" placeholder="Apellido (ej: García)" autocomplete="family-name">
     </div>
     <div class="field">
       <label>Teléfono <span class="req">*</span></label>
@@ -777,7 +795,7 @@ const RECUR_OPTIONS = [
 ];
 
 // ── Paste your Google Apps Script URL here after deploying BookingAPI.gs ──
-const API_URL = 'https://script.google.com/macros/s/AKfycbyKcbtvvwv_gK0AD6hx5GhdbNwevVOc-8go65ST0Ew3yqwDdqtSqyMjybKPR0KeDnkicg/exec';
+const API_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
 
 /* ════════════════════════════════════════════════════════
    STATE
@@ -882,6 +900,10 @@ function renderCalendar() {
   const nowFirst = new Date(); nowFirst.setDate(1); nowFirst.setHours(0,0,0,0);
   const thisFirst = new Date(state.calYear, state.calMonth, 1);
   document.getElementById('prevMonth').disabled = thisFirst <= nowFirst;
+
+  // Show "tap › for next month" hint only on current month
+  const hint = document.getElementById('calNextHint');
+  if (hint) hint.classList.toggle('visible', thisFirst <= nowFirst);
 
   const grid = document.getElementById('calGrid');
   grid.innerHTML = '';
