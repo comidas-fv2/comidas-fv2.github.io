@@ -1094,7 +1094,11 @@ async function selectGroup(g) {
   goTo(2);
   showCalendarLoading();
 
-  const loaded = await loadBooked();
+  const minimumLoadingTime = wait(900);
+  const bookedResult = loadBooked();
+
+  const results = await Promise.all([bookedResult, minimumLoadingTime]);
+  const loaded = results[0];
 
   if (!loaded) {
     showCalendarError();
@@ -1457,6 +1461,10 @@ function updateDots(step) {
   }
 
   document.getElementById('stepDots').style.opacity = step === 6 ? '0' : '1';
+}
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 function toDateStr(date) {
