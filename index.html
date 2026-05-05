@@ -250,6 +250,63 @@
       opacity: 0.5;
     }
 
+    .calendar-loading,
+    .calendar-error {
+      background: var(--light);
+      border-radius: var(--radius);
+      padding: 22px 16px;
+      text-align: center;
+      margin-bottom: 16px;
+      box-shadow: inset 0 0 0 1px rgba(26,42,74,0.05);
+    }
+
+    .calendar-loading {
+      display: none;
+    }
+
+    .calendar-loading.visible {
+      display: block;
+    }
+
+    .calendar-error {
+      display: none;
+      color: #c0392b;
+      background: #fdf0f0;
+      border: 1px solid #f0c0c0;
+    }
+
+    .calendar-error.visible {
+      display: block;
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(26,42,74,0.15);
+      border-top-color: var(--group-color, var(--navy));
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      margin-bottom: 10px;
+    }
+
+    .loading-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 4px;
+    }
+
+    .loading-sub {
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.5;
+    }
+
+    .calendar-content.hidden {
+      display: none;
+    }
+
     .cal-nav {
       display: flex;
       align-items: center;
@@ -744,31 +801,43 @@
   </div>
 
   <div class="screen" id="s2">
-    <div class="cal-nav">
-      <button class="cal-nav-btn" id="prevMonth" onclick="changeMonth(-1)">‹</button>
-      <div class="cal-month" id="calMonth"></div>
-      <button class="cal-nav-btn" id="nextMonth" onclick="changeMonth(1)">›</button>
+    <div class="calendar-loading" id="calendarLoading">
+      <div class="loading-spinner"></div>
+      <div class="loading-title">Cargando fechas disponibles...</div>
+      <div class="loading-sub">Espere unos segundos mientras revisamos el calendario.</div>
     </div>
 
-    <div class="cal-grid" id="calGrid"></div>
-
-    <div class="cal-legend">
-      <div class="legend-item">
-        <div class="legend-dot" id="legendAvail" style="background:var(--navy)"></div>
-        <span>Disponible</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#eaecf2;border:1px solid #ccc"></div>
-        <span>Reservado ✕</span>
-      </div>
-      <div class="legend-item">
-        <div class="legend-dot" style="background:#ddd"></div>
-        <span>Pasado</span>
-      </div>
+    <div class="calendar-error" id="calendarError">
+      No se pudieron cargar las fechas. Por favor intente de nuevo.
     </div>
 
-    <div class="cal-next-hint" id="calNextHint">
-      👉 ¿No ve su fecha? Toque › para ver el próximo mes
+    <div class="calendar-content hidden" id="calendarContent">
+      <div class="cal-nav">
+        <button class="cal-nav-btn" id="prevMonth" onclick="changeMonth(-1)">‹</button>
+        <div class="cal-month" id="calMonth"></div>
+        <button class="cal-nav-btn" id="nextMonth" onclick="changeMonth(1)">›</button>
+      </div>
+
+      <div class="cal-grid" id="calGrid"></div>
+
+      <div class="cal-legend">
+        <div class="legend-item">
+          <div class="legend-dot" id="legendAvail" style="background:var(--navy)"></div>
+          <span>Disponible</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#eaecf2;border:1px solid #ccc"></div>
+          <span>Reservado ✕</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#ddd"></div>
+          <span>Pasado</span>
+        </div>
+      </div>
+
+      <div class="cal-next-hint" id="calNextHint">
+        👉 ¿No ve su fecha? Toque › para ver el próximo mes
+      </div>
     </div>
   </div>
 
@@ -1023,12 +1092,40 @@ async function selectGroup(g) {
   document.getElementById('headerSub').style.color = g.fg;
 
   goTo(2);
-  await loadBooked();
+  showCalendarLoading();
+
+  const loaded = await loadBooked();
+
+  if (!loaded) {
+    showCalendarError();
+    return;
+  }
+
+  showCalendarContent();
   renderCalendar();
 }
 
+function showCalendarLoading() {
+  document.getElementById('calendarLoading').classList.add('visible');
+  document.getElementById('calendarError').classList.remove('visible');
+  document.getElementById('calendarContent').classList.add('hidden');
+  document.getElementById('calGrid').innerHTML = '';
+}
+
+function showCalendarError() {
+  document.getElementById('calendarLoading').classList.remove('visible');
+  document.getElementById('calendarContent').classList.add('hidden');
+  document.getElementById('calendarError').classList.add('visible');
+}
+
+function showCalendarContent() {
+  document.getElementById('calendarLoading').classList.remove('visible');
+  document.getElementById('calendarError').classList.remove('visible');
+  document.getElementById('calendarContent').classList.remove('hidden');
+}
+
 async function loadBooked() {
-  if (!API_URL || API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return;
+  if (!API_URL || API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return false;
 
   try {
     const url = `${API_URL}?action=booked&group=${encodeURIComponent(state.group.id)}&t=${Date.now()}`;
@@ -1038,16 +1135,29 @@ async function loadBooked() {
       cache: 'no-store'
     });
 
+    if (!res.ok) {
+      console.warn('Booked dates request failed with status:', res.status);
+      return false;
+    }
+
     const data = await res.json();
+
+    if (!data || !Array.isArray(data.bookedDates)) {
+      console.warn('Booked dates response was not valid:', data);
+      return false;
+    }
 
     state.bookedDates = new Set(data.bookedDates || []);
     state.bookedSlots = data.bookedSlots || {};
 
     console.log('Loaded booked dates for', state.group.id, Array.from(state.bookedDates));
+
+    return true;
   } catch (e) {
     console.warn('Could not load booked dates:', e);
     state.bookedDates = new Set();
     state.bookedSlots = {};
+    return false;
   }
 }
 
