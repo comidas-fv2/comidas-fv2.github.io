@@ -163,14 +163,8 @@
     }
 
     @keyframes slideIn {
-      from {
-        opacity: 0;
-        transform: translateX(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateX(0);
-      }
+      from { opacity: 0; transform: translateX(20px); }
+      to   { opacity: 1; transform: translateX(0); }
     }
 
     .screen-title {
@@ -207,9 +201,7 @@
       box-shadow: var(--shadow);
     }
 
-    .group-btn:active {
-      transform: scale(0.98);
-    }
+    .group-btn:active { transform: scale(0.98); }
 
     .group-icon {
       width: 44px;
@@ -229,10 +221,7 @@
       object-fit: contain;
     }
 
-    .group-info {
-      flex: 1;
-      min-width: 0;
-    }
+    .group-info { flex: 1; min-width: 0; }
 
     .group-name {
       font-size: 16px;
@@ -246,10 +235,7 @@
       opacity: 0.75;
     }
 
-    .group-arrow {
-      font-size: 20px;
-      opacity: 0.5;
-    }
+    .group-arrow { font-size: 20px; opacity: 0.5; }
 
     .calendar-loading,
     .calendar-error {
@@ -261,13 +247,8 @@
       box-shadow: inset 0 0 0 1px rgba(26,42,74,0.05);
     }
 
-    .calendar-loading {
-      display: none;
-    }
-
-    .calendar-loading.visible {
-      display: block;
-    }
+    .calendar-loading { display: none; }
+    .calendar-loading.visible { display: block; }
 
     .calendar-error {
       display: none;
@@ -276,9 +257,7 @@
       border: 1px solid #f0c0c0;
     }
 
-    .calendar-error.visible {
-      display: block;
-    }
+    .calendar-error.visible { display: block; }
 
     .loading-spinner {
       display: inline-block;
@@ -304,9 +283,7 @@
       line-height: 1.5;
     }
 
-    .calendar-content.hidden {
-      display: none;
-    }
+    .calendar-content.hidden { display: none; }
 
     .cal-nav {
       display: flex;
@@ -318,10 +295,7 @@
       padding: 10px 12px;
     }
 
-    .cal-month {
-      font-size: 17px;
-      font-weight: 700;
-    }
+    .cal-month { font-size: 17px; font-weight: 700; }
 
     .cal-nav-btn {
       background: var(--white);
@@ -339,14 +313,8 @@
       font-weight: 700;
     }
 
-    .cal-nav-btn:active {
-      background: #dde4f0;
-    }
-
-    .cal-nav-btn:disabled {
-      opacity: 0.25;
-      cursor: default;
-    }
+    .cal-nav-btn:active { background: #dde4f0; }
+    .cal-nav-btn:disabled { opacity: 0.25; cursor: default; }
 
     .cal-next-hint {
       text-align: center;
@@ -360,9 +328,7 @@
       display: none;
     }
 
-    .cal-next-hint.visible {
-      display: block;
-    }
+    .cal-next-hint.visible { display: block; }
 
     .cal-grid {
       display: grid;
@@ -395,18 +361,9 @@
       color: var(--navy);
     }
 
-    .cal-day:active {
-      transform: scale(0.9);
-    }
-
-    .cal-day.empty {
-      pointer-events: none;
-    }
-
-    .cal-day.past {
-      color: #ccc;
-      pointer-events: none;
-    }
+    .cal-day:active { transform: scale(0.9); }
+    .cal-day.empty { pointer-events: none; }
+    .cal-day.past { color: #ccc; pointer-events: none; }
 
     .cal-day.available {
       background: var(--group-color, var(--navy));
@@ -462,6 +419,139 @@
       flex-shrink: 0;
     }
 
+    /* ── Availability nudge button ─────────────────────────────────────────── */
+    /* Appears quietly at the bottom of the calendar when the current month    */
+    /* is fully booked. One tap shows the panel, one tap per group to book.    */
+
+    .avail-nudge-wrap {
+      display: none;
+      margin-top: 18px;
+    }
+
+    .avail-nudge-wrap.visible {
+      display: block;
+    }
+
+    .avail-nudge-btn {
+      width: 100%;
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      border: 2px dashed rgba(26,42,74,0.18);
+      background: var(--light);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--navy);
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+    .avail-nudge-btn:active {
+      background: #e8edf6;
+      border-color: var(--navy);
+    }
+
+    /* ── Availability panel ────────────────────────────────────────────────── */
+
+    .avail-panel {
+      display: none;
+      margin-top: 12px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    .avail-panel.visible {
+      display: block;
+    }
+
+    .avail-panel-header {
+      background: var(--navy);
+      color: var(--gold);
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .avail-panel-loading {
+      background: var(--light);
+      padding: 20px 16px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--gray);
+    }
+
+    .avail-panel-loading .loading-spinner {
+      width: 18px;
+      height: 18px;
+      border-width: 2.5px;
+      margin-bottom: 6px;
+    }
+
+    .avail-panel-empty {
+      background: var(--light);
+      padding: 20px 16px;
+      text-align: center;
+      font-size: 13px;
+      color: var(--gray);
+      line-height: 1.6;
+    }
+
+    .avail-group-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 16px;
+      background: var(--white);
+      border-top: 1px solid #eef0f6;
+    }
+
+    .avail-group-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .avail-group-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .avail-group-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+
+    .avail-group-date {
+      font-size: 12px;
+      color: var(--gray);
+      margin-top: 2px;
+    }
+
+    .avail-book-btn {
+      background: var(--navy);
+      color: var(--gold);
+      border: none;
+      border-radius: 10px;
+      padding: 9px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: opacity 0.15s;
+      white-space: nowrap;
+    }
+
+    .avail-book-btn:active { opacity: 0.75; }
+
+    /* ── Rest of existing styles ───────────────────────────────────────────── */
+
     .date-banner {
       background: var(--light);
       border-radius: var(--radius);
@@ -472,14 +562,9 @@
       gap: 10px;
     }
 
-    .date-banner-icon {
-      font-size: 20px;
-    }
+    .date-banner-icon { font-size: 20px; }
 
-    .date-banner-text {
-      font-size: 15px;
-      font-weight: 600;
-    }
+    .date-banner-text { font-size: 15px; font-weight: 600; }
 
     .time-grid {
       display: flex;
@@ -524,11 +609,7 @@
       font-size: 12px;
     }
 
-    .recurring-title {
-      font-size: 15px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
+    .recurring-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
 
     .recurring-sub {
       font-size: 16px;
@@ -567,9 +648,7 @@
       border-color: var(--group-color, var(--navy));
     }
 
-    .recur-icon {
-      font-size: 20px;
-    }
+    .recur-icon { font-size: 20px; }
 
     .booking-summary {
       border-radius: var(--radius);
@@ -583,11 +662,7 @@
       padding: 4px 0;
     }
 
-    .bs-key {
-      font-size: 12px;
-      font-weight: 500;
-      opacity: 0.7;
-    }
+    .bs-key { font-size: 12px; font-weight: 500; opacity: 0.7; }
 
     .bs-val {
       font-size: 16px;
@@ -596,9 +671,7 @@
       max-width: 65%;
     }
 
-    .field {
-      margin-bottom: 17px;
-    }
+    .field { margin-bottom: 17px; }
 
     label {
       display: block;
@@ -608,10 +681,7 @@
       margin-bottom: 7px;
     }
 
-    label .req {
-      color: #c0392b;
-      margin-left: 2px;
-    }
+    label .req { color: #c0392b; margin-left: 2px; }
 
     label .opt {
       color: var(--gray);
@@ -644,10 +714,7 @@
       background: var(--white);
     }
 
-    textarea {
-      resize: vertical;
-      min-height: 75px;
-    }
+    textarea { resize: vertical; min-height: 75px; }
 
     .submit-btn {
       width: 100%;
@@ -662,15 +729,8 @@
       margin-top: 6px;
     }
 
-    .submit-btn:active {
-      transform: scale(0.98);
-    }
-
-    .submit-btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     .error-box {
       background: #fdf0f0;
@@ -683,20 +743,14 @@
       display: none;
     }
 
-    .error-box.visible {
-      display: block;
-    }
+    .error-box.visible { display: block; }
 
     .success-wrap {
       text-align: center;
       padding: 16px 0;
     }
 
-    .success-icon {
-      font-size: 64px;
-      margin-bottom: 14px;
-      display: block;
-    }
+    .success-icon { font-size: 64px; margin-bottom: 14px; display: block; }
 
     .success-title {
       font-family: 'DM Serif Display', serif;
@@ -740,9 +794,7 @@
       line-height: 1.4;
     }
 
-    .success-row:last-child {
-      border-bottom: none;
-    }
+    .success-row:last-child { border-bottom: none; }
 
     .success-note {
       font-size: 16px;
@@ -767,9 +819,7 @@
     }
 
     @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
+      to { transform: rotate(360deg); }
     }
   </style>
 </head>
@@ -839,6 +889,29 @@
       <div class="cal-next-hint" id="calNextHint">
         👉 ¿No ve su fecha? Toque › para ver el próximo mes
       </div>
+
+      <!-- ── Availability nudge — shown only when current month is fully booked ── -->
+      <div class="avail-nudge-wrap" id="availNudgeWrap">
+        <button class="avail-nudge-btn" id="availNudgeBtn" onclick="toggleAvailPanel()">
+          🍽️ ¿Falta algún misionero? Ver disponibilidad
+        </button>
+
+        <div class="avail-panel" id="availPanel">
+          <div class="avail-panel-header">
+            Misioneros que aún necesitan comida este mes
+          </div>
+          <div class="avail-panel-loading" id="availPanelLoading">
+            <div class="loading-spinner"></div>
+            <div>Revisando disponibilidad...</div>
+          </div>
+          <div id="availPanelRows"></div>
+          <div class="avail-panel-empty" id="availPanelEmpty" style="display:none">
+            🙌 ¡Todos los misioneros tienen comida este mes!
+          </div>
+        </div>
+      </div>
+      <!-- ── End availability nudge ── -->
+
     </div>
   </div>
 
@@ -900,9 +973,7 @@
       <span class="success-icon">🙏</span>
       <div class="success-title">¡Gracias!</div>
       <div class="success-msg" id="successMsg"></div>
-
       <div class="success-card" id="successCard"></div>
-
       <div class="success-note">
         Los misioneros les llamarán para confirmar antes de cada comida.<br><br>
         Si necesita hacer cambios, comuníquese con Ave al<br>
@@ -915,70 +986,28 @@
 
 <script>
 const GROUPS = [
-  {
-    id: 'todos_misioneros',
-    label: 'Todos los Misioneros',
-    desc: 'Todos los misioneros juntos',
-    icon: 'icon-todos.png',
-    bg: '#134f5c',
-    fg: '#a8dde5'
-  },
-  {
-    id: 'todos_elderes',
-    label: 'Todos los Élderes',
-    desc: 'Todos los Élderes juntos',
-    icon: 'icon-elderes.png',
-    bg: '#1a4a3a',
-    fg: '#a8e0c8'
-  },
-  {
-    id: 'elderes_fv',
-    label: 'Élderes FV',
-    desc: 'Élderes de Fuquay-Varina',
-    icon: 'icon-elderes.png',
-    bg: '#1a2a4a',
-    fg: '#c8a96e'
-  },
-  {
-    id: 'elderes_garner',
-    label: 'Élderes Garner',
-    desc: 'Élderes que viven en Garner',
-    icon: 'icon-elderes.png',
-    bg: '#2e5f8a',
-    fg: '#e8d5a0'
-  },
-  {
-    id: 'hermanas',
-    label: 'Hermanas',
-    desc: 'Compañía de Hermanas',
-    icon: 'icon-hermanas.jpg',
-    bg: '#6d2b4e',
-    fg: '#e8b4cc'
-  }
+  { id: 'todos_misioneros', label: 'Todos los Misioneros', desc: 'Todos los misioneros juntos',       icon: 'icon-todos.png',    bg: '#134f5c', fg: '#a8dde5' },
+  { id: 'todos_elderes',    label: 'Todos los Élderes',    desc: 'Todos los Élderes juntos',           icon: 'icon-elderes.png',  bg: '#1a4a3a', fg: '#a8e0c8' },
+  { id: 'elderes_fv',       label: 'Élderes FV',           desc: 'Élderes de Fuquay-Varina',           icon: 'icon-elderes.png',  bg: '#1a2a4a', fg: '#c8a96e' },
+  { id: 'elderes_garner',   label: 'Élderes Garner',       desc: 'Élderes que viven en Garner',        icon: 'icon-elderes.png',  bg: '#2e5f8a', fg: '#e8d5a0' },
+  { id: 'hermanas',         label: 'Hermanas',             desc: 'Compañía de Hermanas',               icon: 'icon-hermanas.jpg', bg: '#6d2b4e', fg: '#e8b4cc' }
 ];
 
 const TIME_SLOTS = [
-  '3:00 pm',
-  '3:30 pm',
-  '4:00 pm',
-  '4:30 pm',
-  '5:00 pm',
-  '5:30 pm',
-  '6:00 pm',
-  '6:30 pm',
-  '7:00 pm',
-  '7:30 pm'
+  '3:00 pm','3:30 pm','4:00 pm','4:30 pm',
+  '5:00 pm','5:30 pm','6:00 pm','6:30 pm',
+  '7:00 pm','7:30 pm'
 ];
 
 const RECUR_OPTIONS = [
-  { weeks: 1, label: 'No, solo esta fecha', icon: '📅' },
-  { weeks: 2, label: '2 semanas seguidas', icon: '🔁' },
-  { weeks: 3, label: '3 semanas seguidas', icon: '🔁' },
-  { weeks: 4, label: '4 semanas (1 mes)', icon: '📆' },
-  { weeks: 5, label: '5 semanas seguidas', icon: '🔁' },
-  { weeks: 6, label: '6 semanas seguidas', icon: '🔁' },
-  { weeks: 7, label: '7 semanas seguidas', icon: '🔁' },
-  { weeks: 8, label: '8 semanas (2 meses)', icon: '📆' }
+  { weeks: 1, label: 'No, solo esta fecha',   icon: '📅' },
+  { weeks: 2, label: '2 semanas seguidas',    icon: '🔁' },
+  { weeks: 3, label: '3 semanas seguidas',    icon: '🔁' },
+  { weeks: 4, label: '4 semanas (1 mes)',      icon: '📆' },
+  { weeks: 5, label: '5 semanas seguidas',    icon: '🔁' },
+  { weeks: 6, label: '6 semanas seguidas',    icon: '🔁' },
+  { weeks: 7, label: '7 semanas seguidas',    icon: '🔁' },
+  { weeks: 8, label: '8 semanas (2 meses)',   icon: '📆' }
 ];
 
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKcbtvvwv_gK0AD6hx5GhdbNwevVOc-8go65ST0Ew3yqwDdqtSqyMjybKPR0KeDnkicg/exec';
@@ -992,58 +1021,16 @@ let state = {
   bookedSlots: {},
   selDate: null,
   selTime: null,
-  selWeeks: 1
+  selWeeks: 1,
+  // availability panel state
+  availPanelOpen: false,
+  availPanelLoaded: false
 };
 
-const MESES_ES = [
-  'Enero',
-  'Febrero',
-  'Marzo',
-  'Abril',
-  'Mayo',
-  'Junio',
-  'Julio',
-  'Agosto',
-  'Septiembre',
-  'Octubre',
-  'Noviembre',
-  'Diciembre'
-];
-
-const DIAS_ES = [
-  'Dom',
-  'Lun',
-  'Mar',
-  'Mié',
-  'Jue',
-  'Vie',
-  'Sáb'
-];
-
-const DIAS_LONG = [
-  'domingo',
-  'lunes',
-  'martes',
-  'miércoles',
-  'jueves',
-  'viernes',
-  'sábado'
-];
-
-const MESES_LONG = [
-  'enero',
-  'febrero',
-  'marzo',
-  'abril',
-  'mayo',
-  'junio',
-  'julio',
-  'agosto',
-  'septiembre',
-  'octubre',
-  'noviembre',
-  'diciembre'
-];
+const MESES_ES   = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const DIAS_ES    = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+const DIAS_LONG  = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const MESES_LONG = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 
 window.addEventListener('DOMContentLoaded', () => {
   buildGroupList();
@@ -1053,12 +1040,10 @@ window.addEventListener('DOMContentLoaded', () => {
 function buildGroupList() {
   const el = document.getElementById('groupList');
   el.innerHTML = '';
-
   GROUPS.forEach(g => {
     const btn = document.createElement('button');
     btn.className = 'group-btn';
     btn.style.background = g.bg;
-
     btn.innerHTML = `
       <div class="group-icon">
         <img src="${g.icon}" alt="${g.label}" onerror="this.style.display='none'">
@@ -1069,44 +1054,43 @@ function buildGroupList() {
       </div>
       <div class="group-arrow" style="color:${g.fg}">›</div>
     `;
-
     btn.onclick = () => selectGroup(g);
     el.appendChild(btn);
   });
 }
 
 async function selectGroup(g) {
-  state.group = g;
-  state.calYear = new Date().getFullYear();
-  state.calMonth = new Date().getMonth();
-  state.bookedDates = new Set();
-  state.bookedSlots = {};
-  state.selDate = null;
-  state.selTime = null;
-  state.selWeeks = 1;
+  state.group        = g;
+  state.calYear      = new Date().getFullYear();
+  state.calMonth     = new Date().getMonth();
+  state.bookedDates  = new Set();
+  state.bookedSlots  = {};
+  state.selDate      = null;
+  state.selTime      = null;
+  state.selWeeks     = 1;
+  state.availPanelOpen   = false;
+  state.availPanelLoaded = false;
 
   document.documentElement.style.setProperty('--group-color', g.bg);
   document.documentElement.style.setProperty('--group-fg', g.fg);
-
   document.getElementById('legendAvail').style.background = g.bg;
-  document.getElementById('headerSub').textContent = g.label;
-  document.getElementById('headerSub').style.color = g.fg;
+  document.getElementById('headerSub').textContent        = g.label;
+  document.getElementById('headerSub').style.color        = g.fg;
+
+  // Reset panel UI
+  document.getElementById('availNudgeWrap').classList.remove('visible');
+  document.getElementById('availPanel').classList.remove('visible');
+  document.getElementById('availPanelRows').innerHTML = '';
+  document.getElementById('availPanelEmpty').style.display = 'none';
 
   goTo(2);
   hideCalendarWhileLoading();
 
-  const loadingTimer = setTimeout(() => {
-    showCalendarLoading();
-  }, 400);
-
+  const loadingTimer = setTimeout(() => { showCalendarLoading(); }, 400);
   const loaded = await loadBooked();
-
   clearTimeout(loadingTimer);
 
-  if (!loaded) {
-    showCalendarError();
-    return;
-  }
+  if (!loaded) { showCalendarError(); return; }
 
   showCalendarContent();
   renderCalendar();
@@ -1140,35 +1124,16 @@ function showCalendarContent() {
 
 async function loadBooked() {
   if (!API_URL || API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return false;
-
   try {
     const url = `${API_URL}?action=booked&group=${encodeURIComponent(state.group.id)}&t=${Date.now()}`;
-
-    const res = await fetch(url, {
-      method: 'GET',
-      cache: 'no-store'
-    });
-
-    if (!res.ok) {
-      console.warn('Booked dates request failed with status:', res.status);
-      return false;
-    }
-
+    const res  = await fetch(url, { method: 'GET', cache: 'no-store' });
+    if (!res.ok) return false;
     const data = await res.json();
-
-    if (!data || !Array.isArray(data.bookedDates)) {
-      console.warn('Booked dates response was not valid:', data);
-      return false;
-    }
-
+    if (!data || !Array.isArray(data.bookedDates)) return false;
     state.bookedDates = new Set(data.bookedDates || []);
     state.bookedSlots = data.bookedSlots || {};
-
-    console.log('Loaded booked dates for', state.group.id, Array.from(state.bookedDates));
-
     return true;
   } catch (e) {
-    console.warn('Could not load booked dates:', e);
     state.bookedDates = new Set();
     state.bookedSlots = {};
     return false;
@@ -1176,19 +1141,15 @@ async function loadBooked() {
 }
 
 function renderCalendar() {
-  const today = new Date();
+  const today    = new Date();
   today.setHours(0, 0, 0, 0);
 
   const firstDay = new Date(state.calYear, state.calMonth, 1);
-  const lastDay = new Date(state.calYear, state.calMonth + 1, 0);
+  const lastDay  = new Date(state.calYear, state.calMonth + 1, 0);
 
-  document.getElementById('calMonth').textContent =
-    `${MESES_ES[state.calMonth]} ${state.calYear}`;
+  document.getElementById('calMonth').textContent = `${MESES_ES[state.calMonth]} ${state.calYear}`;
 
-  const nowFirst = new Date();
-  nowFirst.setDate(1);
-  nowFirst.setHours(0, 0, 0, 0);
-
+  const nowFirst  = new Date(); nowFirst.setDate(1); nowFirst.setHours(0,0,0,0);
   const thisFirst = new Date(state.calYear, state.calMonth, 1);
   document.getElementById('prevMonth').disabled = thisFirst <= nowFirst;
 
@@ -1200,7 +1161,7 @@ function renderCalendar() {
 
   DIAS_ES.forEach(d => {
     const cell = document.createElement('div');
-    cell.className = 'cal-dow';
+    cell.className  = 'cal-dow';
     cell.textContent = d;
     grid.appendChild(cell);
   });
@@ -1211,10 +1172,12 @@ function renderCalendar() {
     grid.appendChild(c);
   }
 
+  let availableCount = 0;
+
   for (let d = 1; d <= lastDay.getDate(); d++) {
-    const date = new Date(state.calYear, state.calMonth, d);
+    const date    = new Date(state.calYear, state.calMonth, d);
     const dateStr = toDateStr(date);
-    const isPast = date < today;
+    const isPast  = date < today;
     const isToday = date.getTime() === today.getTime();
     const isBooked = state.bookedDates.has(dateStr);
 
@@ -1229,27 +1192,136 @@ function renderCalendar() {
       cell.className = 'cal-day available';
       if (isToday) cell.classList.add('today');
       cell.onclick = () => selectDate(date, dateStr);
+      availableCount++;
     }
 
     grid.appendChild(cell);
   }
+
+  // Show the nudge button only when this month has no available days left.
+  // Reset panel state when re-rendering (month change or group change).
+  const nudgeWrap = document.getElementById('availNudgeWrap');
+  const panel     = document.getElementById('availPanel');
+  const monthFullyBooked = availableCount === 0;
+
+  if (monthFullyBooked) {
+    nudgeWrap.classList.add('visible');
+  } else {
+    nudgeWrap.classList.remove('visible');
+    panel.classList.remove('visible');
+    state.availPanelOpen   = false;
+    state.availPanelLoaded = false;
+  }
 }
 
 function changeMonth(dir) {
+  // Close and reset the panel on month change so it re-checks the new month.
+  document.getElementById('availPanel').classList.remove('visible');
+  document.getElementById('availPanelRows').innerHTML = '';
+  document.getElementById('availPanelEmpty').style.display = 'none';
+  state.availPanelOpen   = false;
+  state.availPanelLoaded = false;
+
   state.calMonth += dir;
-
-  if (state.calMonth < 0) {
-    state.calMonth = 11;
-    state.calYear--;
-  }
-
-  if (state.calMonth > 11) {
-    state.calMonth = 0;
-    state.calYear++;
-  }
-
+  if (state.calMonth < 0)  { state.calMonth = 11; state.calYear--; }
+  if (state.calMonth > 11) { state.calMonth = 0;  state.calYear++; }
   renderCalendar();
 }
+
+// ── Availability panel ──────────────────────────────────────────────────────
+
+async function toggleAvailPanel() {
+  const panel = document.getElementById('availPanel');
+
+  if (state.availPanelOpen) {
+    // Close
+    panel.classList.remove('visible');
+    state.availPanelOpen = false;
+    return;
+  }
+
+  // Open
+  panel.classList.add('visible');
+  state.availPanelOpen = true;
+
+  // Only fetch once per group+month
+  if (state.availPanelLoaded) return;
+
+  document.getElementById('availPanelLoading').style.display = 'block';
+  document.getElementById('availPanelRows').innerHTML        = '';
+  document.getElementById('availPanelEmpty').style.display  = 'none';
+
+  // Fetch availability for all OTHER groups in parallel
+  const otherGroups = GROUPS.filter(g => g.id !== state.group.id);
+
+  const results = await Promise.all(
+    otherGroups.map(async g => {
+      try {
+        const url  = `${API_URL}?action=booked&group=${encodeURIComponent(g.id)}&t=${Date.now()}`;
+        const res  = await fetch(url, { method: 'GET', cache: 'no-store' });
+        if (!res.ok) return null;
+        const data = await res.json();
+        if (!data || !Array.isArray(data.bookedDates)) return null;
+
+        // Find the next open date in the currently viewed month
+        const nextOpen = findNextOpenDate(new Set(data.bookedDates), state.calYear, state.calMonth);
+        return { group: g, nextOpen };
+      } catch (e) {
+        return null;
+      }
+    })
+  );
+
+  document.getElementById('availPanelLoading').style.display = 'none';
+
+  // Filter to groups that actually have an open date this month
+  const open = results.filter(r => r && r.nextOpen);
+
+  const rowsEl  = document.getElementById('availPanelRows');
+  const emptyEl = document.getElementById('availPanelEmpty');
+
+  if (open.length === 0) {
+    emptyEl.style.display = 'block';
+  } else {
+    open.forEach(({ group: g, nextOpen }) => {
+      const row = document.createElement('div');
+      row.className = 'avail-group-row';
+      row.innerHTML = `
+        <div class="avail-group-dot" style="background:${g.bg}"></div>
+        <div class="avail-group-info">
+          <div class="avail-group-name">${g.label}</div>
+          <div class="avail-group-date">Próxima fecha: ${formatDateDisplay(nextOpen)}</div>
+        </div>
+        <button class="avail-book-btn" style="background:${g.bg};color:${g.fg}">
+          Reservar →
+        </button>
+      `;
+      // Tapping Reservar → goes directly into that group's booking flow
+      row.querySelector('.avail-book-btn').onclick = () => selectGroup(g);
+      rowsEl.appendChild(row);
+    });
+  }
+
+  state.availPanelLoaded = true;
+}
+
+// Returns the first non-past, non-booked Date in the given year/month,
+// or null if the month is fully booked.
+function findNextOpenDate(bookedSet, year, month) {
+  const today   = new Date();
+  today.setHours(0, 0, 0, 0);
+  const lastDay = new Date(year, month + 1, 0).getDate();
+
+  for (let d = 1; d <= lastDay; d++) {
+    const date    = new Date(year, month, d);
+    const dateStr = toDateStr(date);
+    if (date < today) continue;
+    if (!bookedSet.has(dateStr)) return date;
+  }
+  return null;
+}
+
+// ── Rest of booking flow (unchanged) ───────────────────────────────────────
 
 function selectDate(date, dateStr) {
   state.selDate = { date, dateStr };
@@ -1258,22 +1330,20 @@ function selectDate(date, dateStr) {
   document.getElementById('dateBannerText').textContent = disp;
 
   const booked = state.bookedSlots[dateStr] || [];
-  const grid = document.getElementById('timeGrid');
+  const grid   = document.getElementById('timeGrid');
   grid.innerHTML = '';
 
   TIME_SLOTS.forEach(slot => {
     const btn = document.createElement('button');
     btn.textContent = slot;
-
     if (booked.includes(slot)) {
       btn.className = 'time-btn taken';
     } else {
       btn.className = 'time-btn avail';
       btn.style.setProperty('--group-color', state.group.bg);
-      btn.style.setProperty('--group-fg', state.group.fg);
+      btn.style.setProperty('--group-fg',    state.group.fg);
       btn.onclick = () => selectTime(slot);
     }
-
     grid.appendChild(btn);
   });
 
@@ -1282,23 +1352,18 @@ function selectDate(date, dateStr) {
 
 function selectTime(slot) {
   state.selTime = slot;
-
-  const d = state.selDate;
+  const d      = state.selDate;
   const banner = `${formatDateDisplay(d.date)} — ${slot}`;
-
   document.getElementById('recurBannerText').textContent = banner;
 
   const opts = document.getElementById('recurOpts');
-
-  while (opts.firstChild) {
-    opts.removeChild(opts.firstChild);
-  }
+  while (opts.firstChild) opts.removeChild(opts.firstChild);
 
   RECUR_OPTIONS.forEach(o => {
     const btn = document.createElement('button');
     btn.className = 'recur-btn';
     btn.style.setProperty('--group-color', state.group.bg);
-    btn.style.setProperty('--group-fg', state.group.fg);
+    btn.style.setProperty('--group-fg',    state.group.fg);
     btn.innerHTML = `<span class="recur-icon">${o.icon}</span> ${o.label}`;
     btn.onclick = () => selectRecur(o.weeks);
     opts.appendChild(btn);
@@ -1310,14 +1375,13 @@ function selectTime(slot) {
 function selectRecur(weeks) {
   state.selWeeks = weeks;
 
-  const g = state.group;
-  const d = state.selDate;
+  const g       = state.group;
+  const d       = state.selDate;
   const dateDisp = formatDateDisplay(d.date);
 
   const summary = document.getElementById('bookingSummary');
   summary.style.background = g.bg;
-  summary.style.color = g.fg;
-
+  summary.style.color      = g.fg;
   summary.innerHTML = `
     <div class="bs-row"><span class="bs-key">Grupo</span><span class="bs-val">${g.label}</span></div>
     <div class="bs-row"><span class="bs-key">Primera fecha</span><span class="bs-val">${dateDisp}</span></div>
@@ -1327,41 +1391,32 @@ function selectRecur(weeks) {
 
   const btn = document.getElementById('submitBtn');
   btn.style.background = g.bg;
-  btn.style.color = g.fg;
+  btn.style.color      = g.fg;
 
   goTo(5);
 }
 
 async function submitBooking() {
-  const nombre = document.getElementById('fNombre').value.trim();
-  const raw = document.getElementById('fTelefono').value.trim();
-  const digits = raw.replace(/\D/g, '');
-
+  const nombre   = document.getElementById('fNombre').value.trim();
+  const raw      = document.getElementById('fTelefono').value.trim();
+  const digits   = raw.replace(/\D/g, '');
   const telefono = digits.length === 10
     ? `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6)}`
     : digits.length === 11 && digits[0] === '1'
       ? `(${digits.slice(1,4)}) ${digits.slice(4,7)}-${digits.slice(7)}`
       : raw;
-
-  const email = document.getElementById('fEmail').value.trim();
-  const notas = document.getElementById('fNotas').value.trim();
+  const email    = document.getElementById('fEmail').value.trim();
+  const notas    = document.getElementById('fNotas').value.trim();
   const errorBox = document.getElementById('errorBox');
 
   errorBox.classList.remove('visible');
 
-  if (!nombre) {
-    showError('Por favor ingrese el apellido de su familia.');
-    return;
-  }
-
-  if (!telefono) {
-    showError('Por favor ingrese su número de teléfono.');
-    return;
-  }
+  if (!nombre)   { showError('Por favor ingrese el apellido de su familia.'); return; }
+  if (!telefono) { showError('Por favor ingrese su número de teléfono.');     return; }
 
   const btn = document.getElementById('submitBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Enviando...';
+  btn.disabled   = true;
+  btn.innerHTML  = '<span class="spinner"></span>Enviando...';
 
   const payload = {
     action: 'book',
@@ -1370,23 +1425,15 @@ async function submitBooking() {
     date: state.selDate.dateStr,
     time: state.selTime,
     weeks: state.selWeeks,
-    nombre,
-    telefono,
-    email,
-    notas
+    nombre, telefono, email, notas
   };
 
   try {
     let result;
-
     if (!API_URL || API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
       result = { success: true };
     } else {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      });
-
+      const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
       result = await res.json();
     }
 
@@ -1394,12 +1441,12 @@ async function submitBooking() {
       showSuccess(nombre, payload);
     } else {
       showError(result.error || 'Hubo un error. Intente de nuevo.');
-      btn.disabled = false;
+      btn.disabled  = false;
       btn.innerHTML = 'Confirmar comida';
     }
   } catch (err) {
     showError('Error de conexión. Por favor intente de nuevo.');
-    btn.disabled = false;
+    btn.disabled  = false;
     btn.innerHTML = 'Confirmar comida';
   }
 }
@@ -1412,7 +1459,7 @@ function showError(msg) {
 }
 
 function showSuccess(nombre, p) {
-  const g = state.group;
+  const g        = state.group;
   const dateDisp = formatDateDisplay(state.selDate.date);
   const weeksNote = p.weeks > 1 ? ` por ${p.weeks} semanas` : '';
 
@@ -1421,8 +1468,7 @@ function showSuccess(nombre, p) {
 
   const card = document.getElementById('successCard');
   card.style.background = g.bg;
-  card.style.color = g.fg;
-
+  card.style.color      = g.fg;
   card.innerHTML = `
     <div class="success-card-label" style="color:${g.fg}">${g.label}</div>
     <div class="success-row">📅 <span>${dateDisp}</span></div>
@@ -1438,52 +1484,34 @@ function showSuccess(nombre, p) {
 function goTo(step) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(`s${step}`).classList.add('active');
-
   state.step = step;
   updateDots(step);
-
   document.getElementById('backBtn').classList.toggle('visible', step > 1 && step < 6);
-
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function goBack() {
-  if (state.step > 1) {
-    goTo(state.step - 1);
-  }
+  if (state.step > 1) goTo(state.step - 1);
 }
 
 function updateDots(step) {
   for (let i = 1; i <= 5; i++) {
     const dot = document.getElementById(`dot${i}`);
     if (!dot) continue;
-
-    if (i < step) {
-      dot.className = 'step-dot done';
-    } else if (i === step) {
-      dot.className = 'step-dot active';
-    } else {
-      dot.className = 'step-dot';
-    }
+    if      (i < step) dot.className = 'step-dot done';
+    else if (i === step) dot.className = 'step-dot active';
+    else dot.className = 'step-dot';
   }
-
   document.getElementById('stepDots').style.opacity = step === 6 ? '0' : '1';
 }
 
 function toDateStr(date) {
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+  return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
 }
 
-function pad(n) {
-  return String(n).padStart(2, '0');
-}
+function pad(n) { return String(n).padStart(2, '0'); }
 
-function capFirst(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
+function capFirst(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
 
 function formatDateDisplay(date) {
   return `${capFirst(DIAS_LONG[date.getDay()])}, ${date.getDate()} de ${MESES_LONG[date.getMonth()]}`;
