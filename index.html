@@ -90,18 +90,10 @@
       transition: background 0.2s;
     }
 
-    .back-btn.visible {
-      display: flex;
-    }
+    .back-btn.visible { display: flex; }
+    .back-btn:active { background: rgba(255,255,255,0.2); }
 
-    .back-btn:active {
-      background: rgba(255,255,255,0.2);
-    }
-
-    .header-text {
-      flex: 1;
-      min-width: 0;
-    }
+    .header-text { flex: 1; min-width: 0; }
 
     .header-branch {
       color: rgba(200,169,110,0.7);
@@ -143,13 +135,8 @@
       transition: background 0.3s;
     }
 
-    .step-dot.active {
-      background: var(--gold);
-    }
-
-    .step-dot.done {
-      background: rgba(200,169,110,0.45);
-    }
+    .step-dot.active { background: var(--gold); }
+    .step-dot.done   { background: rgba(200,169,110,0.45); }
 
     .screen {
       display: none;
@@ -158,9 +145,7 @@
       animation: slideIn 0.22s ease;
     }
 
-    .screen.active {
-      display: block;
-    }
+    .screen.active { display: block; }
 
     @keyframes slideIn {
       from { opacity: 0; transform: translateX(20px); }
@@ -313,7 +298,7 @@
       font-weight: 700;
     }
 
-    .cal-nav-btn:active { background: #dde4f0; }
+    .cal-nav-btn:active   { background: #dde4f0; }
     .cal-nav-btn:disabled { opacity: 0.25; cursor: default; }
 
     .cal-next-hint {
@@ -362,8 +347,8 @@
     }
 
     .cal-day:active { transform: scale(0.9); }
-    .cal-day.empty { pointer-events: none; }
-    .cal-day.past { color: #ccc; pointer-events: none; }
+    .cal-day.empty  { pointer-events: none; }
+    .cal-day.past   { color: #ccc; pointer-events: none; }
 
     .cal-day.available {
       background: var(--group-color, var(--navy));
@@ -419,18 +404,16 @@
       flex-shrink: 0;
     }
 
-    /* ── Availability nudge button ─────────────────────────────────────────── */
-    /* Appears quietly at the bottom of the calendar when the current month    */
-    /* is fully booked. One tap shows the panel, one tap per group to book.    */
+    /* ── Availability nudge ────────────────────────────────────────────────── */
+    /* Sits between the month nav and the day grid so it's visible immediately */
+    /* without scrolling. Only shown when the current month is fully booked.   */
 
     .avail-nudge-wrap {
       display: none;
-      margin-top: 18px;
+      margin-bottom: 12px;
     }
 
-    .avail-nudge-wrap.visible {
-      display: block;
-    }
+    .avail-nudge-wrap.visible { display: block; }
 
     .avail-nudge-btn {
       width: 100%;
@@ -456,15 +439,13 @@
 
     .avail-panel {
       display: none;
-      margin-top: 12px;
+      margin-top: 8px;
       border-radius: var(--radius);
       overflow: hidden;
       box-shadow: var(--shadow);
     }
 
-    .avail-panel.visible {
-      display: block;
-    }
+    .avail-panel.visible { display: block; }
 
     .avail-panel-header {
       background: var(--navy);
@@ -515,10 +496,7 @@
       flex-shrink: 0;
     }
 
-    .avail-group-info {
-      flex: 1;
-      min-width: 0;
-    }
+    .avail-group-info { flex: 1; min-width: 0; }
 
     .avail-group-name {
       font-size: 13px;
@@ -534,8 +512,6 @@
     }
 
     .avail-book-btn {
-      background: var(--navy);
-      color: var(--gold);
       border: none;
       border-radius: 10px;
       padding: 9px 14px;
@@ -550,7 +526,7 @@
 
     .avail-book-btn:active { opacity: 0.75; }
 
-    /* ── Rest of existing styles ───────────────────────────────────────────── */
+    /* ── Remaining styles (unchanged) ─────────────────────────────────────── */
 
     .date-banner {
       background: var(--light);
@@ -563,14 +539,9 @@
     }
 
     .date-banner-icon { font-size: 20px; }
-
     .date-banner-text { font-size: 15px; font-weight: 600; }
 
-    .time-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
+    .time-grid { display: flex; flex-direction: column; gap: 9px; }
 
     .time-btn {
       width: 100%;
@@ -604,10 +575,7 @@
       pointer-events: none;
     }
 
-    .time-btn.taken::after {
-      content: ' — Reservado';
-      font-size: 12px;
-    }
+    .time-btn.taken::after { content: ' — Reservado'; font-size: 12px; }
 
     .recurring-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
 
@@ -618,11 +586,7 @@
       line-height: 1.5;
     }
 
-    .recur-opts {
-      display: flex;
-      flex-direction: column;
-      gap: 9px;
-    }
+    .recur-opts { display: flex; flex-direction: column; gap: 9px; }
 
     .recur-btn {
       width: 100%;
@@ -656,12 +620,7 @@
       margin-bottom: 20px;
     }
 
-    .bs-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 4px 0;
-    }
-
+    .bs-row { display: flex; justify-content: space-between; padding: 4px 0; }
     .bs-key { font-size: 12px; font-weight: 500; opacity: 0.7; }
 
     .bs-val {
@@ -729,7 +688,7 @@
       margin-top: 6px;
     }
 
-    .submit-btn:active { transform: scale(0.98); }
+    .submit-btn:active   { transform: scale(0.98); }
     .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
     .error-box {
@@ -745,10 +704,7 @@
 
     .error-box.visible { display: block; }
 
-    .success-wrap {
-      text-align: center;
-      padding: 16px 0;
-    }
+    .success-wrap { text-align: center; padding: 16px 0; }
 
     .success-icon { font-size: 64px; margin-bottom: 14px; display: block; }
 
@@ -818,9 +774,7 @@
       margin-right: 7px;
     }
 
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 
@@ -863,34 +817,17 @@
     </div>
 
     <div class="calendar-content hidden" id="calendarContent">
+
+      <!-- Month navigation -->
       <div class="cal-nav">
         <button class="cal-nav-btn" id="prevMonth" onclick="changeMonth(-1)">‹</button>
         <div class="cal-month" id="calMonth"></div>
         <button class="cal-nav-btn" id="nextMonth" onclick="changeMonth(1)">›</button>
       </div>
 
-      <div class="cal-grid" id="calGrid"></div>
-
-      <div class="cal-legend">
-        <div class="legend-item">
-          <div class="legend-dot" id="legendAvail" style="background:var(--navy)"></div>
-          <span>Disponible</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:#eaecf2;border:1px solid #ccc"></div>
-          <span>Reservado ✕</span>
-        </div>
-        <div class="legend-item">
-          <div class="legend-dot" style="background:#ddd"></div>
-          <span>Pasado</span>
-        </div>
-      </div>
-
-      <div class="cal-next-hint" id="calNextHint">
-        👉 ¿No ve su fecha? Toque › para ver el próximo mes
-      </div>
-
-      <!-- ── Availability nudge — shown only when current month is fully booked ── -->
+      <!-- ── Availability nudge — sits above the day grid so it is always    -->
+      <!-- visible without scrolling. Shown only when the month is fully      -->
+      <!-- booked for the current group.                                       -->
       <div class="avail-nudge-wrap" id="availNudgeWrap">
         <button class="avail-nudge-btn" id="availNudgeBtn" onclick="toggleAvailPanel()">
           🍽️ Aún hay misioneros sin comida este mes — ver disponibilidad
@@ -912,6 +849,28 @@
       </div>
       <!-- ── End availability nudge ── -->
 
+      <!-- Calendar grid -->
+      <div class="cal-grid" id="calGrid"></div>
+
+      <div class="cal-legend">
+        <div class="legend-item">
+          <div class="legend-dot" id="legendAvail" style="background:var(--navy)"></div>
+          <span>Disponible</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#eaecf2;border:1px solid #ccc"></div>
+          <span>Reservado ✕</span>
+        </div>
+        <div class="legend-item">
+          <div class="legend-dot" style="background:#ddd"></div>
+          <span>Pasado</span>
+        </div>
+      </div>
+
+      <div class="cal-next-hint" id="calNextHint">
+        👉 ¿No ve su fecha? Toque › para ver el próximo mes
+      </div>
+
     </div>
   </div>
 
@@ -920,10 +879,8 @@
       <span class="date-banner-icon">📅</span>
       <span class="date-banner-text" id="dateBannerText"></span>
     </div>
-
     <p class="screen-title">Seleccione la hora</p>
     <p class="screen-sub">Escoja la hora a la que prefiere servir la comida.</p>
-
     <div class="time-grid" id="timeGrid"></div>
   </div>
 
@@ -932,10 +889,8 @@
       <span class="date-banner-icon">🔁</span>
       <span class="date-banner-text" id="recurBannerText"></span>
     </div>
-
     <p class="recurring-title">¿Desea repetir esta comida semanalmente?</p>
     <p class="recurring-sub">Puede comprometerse hasta por 8 semanas. El último día se enviará un recordatorio para reservar el siguiente período.</p>
-
     <div class="recur-opts" id="recurOpts"></div>
   </div>
 
@@ -947,17 +902,14 @@
       <label>Apellido de la familia <span class="req">*</span></label>
       <input type="text" id="fNombre" placeholder="Apellido (ej: García)" autocomplete="family-name">
     </div>
-
     <div class="field">
       <label>Teléfono <span class="req">*</span></label>
       <input type="tel" id="fTelefono" placeholder="(919) 000-0000" autocomplete="tel">
     </div>
-
     <div class="field">
       <label>Correo electrónico <span class="opt">(opcional — para confirmación)</span></label>
       <input type="email" id="fEmail" placeholder="correo@ejemplo.com" autocomplete="email">
     </div>
-
     <div class="field">
       <label>Notas <span class="opt">(opcional)</span></label>
       <textarea id="fNotas" placeholder="Instrucciones de entrega, alergias, etc."></textarea>
@@ -986,11 +938,11 @@
 
 <script>
 const GROUPS = [
-  { id: 'todos_misioneros', label: 'Todos los Misioneros', desc: 'Todos los misioneros juntos',       icon: 'icon-todos.png',    bg: '#134f5c', fg: '#a8dde5' },
-  { id: 'todos_elderes',    label: 'Todos los Élderes',    desc: 'Todos los Élderes juntos',           icon: 'icon-elderes.png',  bg: '#1a4a3a', fg: '#a8e0c8' },
-  { id: 'elderes_fv',       label: 'Élderes FV',           desc: 'Élderes de Fuquay-Varina',           icon: 'icon-elderes.png',  bg: '#1a2a4a', fg: '#c8a96e' },
-  { id: 'elderes_garner',   label: 'Élderes Garner',       desc: 'Élderes que viven en Garner',        icon: 'icon-elderes.png',  bg: '#2e5f8a', fg: '#e8d5a0' },
-  { id: 'hermanas',         label: 'Hermanas',             desc: 'Compañía de Hermanas',               icon: 'icon-hermanas.jpg', bg: '#6d2b4e', fg: '#e8b4cc' }
+  { id: 'todos_misioneros', label: 'Todos los Misioneros', desc: 'Todos los misioneros juntos',  icon: 'icon-todos.png',    bg: '#134f5c', fg: '#a8dde5' },
+  { id: 'todos_elderes',    label: 'Todos los Élderes',    desc: 'Todos los Élderes juntos',      icon: 'icon-elderes.png',  bg: '#1a4a3a', fg: '#a8e0c8' },
+  { id: 'elderes_fv',       label: 'Élderes FV',           desc: 'Élderes de Fuquay-Varina',      icon: 'icon-elderes.png',  bg: '#1a2a4a', fg: '#c8a96e' },
+  { id: 'elderes_garner',   label: 'Élderes Garner',       desc: 'Élderes que viven en Garner',   icon: 'icon-elderes.png',  bg: '#2e5f8a', fg: '#e8d5a0' },
+  { id: 'hermanas',         label: 'Hermanas',             desc: 'Compañía de Hermanas',          icon: 'icon-hermanas.jpg', bg: '#6d2b4e', fg: '#e8b4cc' }
 ];
 
 const TIME_SLOTS = [
@@ -1000,14 +952,14 @@ const TIME_SLOTS = [
 ];
 
 const RECUR_OPTIONS = [
-  { weeks: 1, label: 'No, solo esta fecha',   icon: '📅' },
-  { weeks: 2, label: '2 semanas seguidas',    icon: '🔁' },
-  { weeks: 3, label: '3 semanas seguidas',    icon: '🔁' },
-  { weeks: 4, label: '4 semanas (1 mes)',      icon: '📆' },
-  { weeks: 5, label: '5 semanas seguidas',    icon: '🔁' },
-  { weeks: 6, label: '6 semanas seguidas',    icon: '🔁' },
-  { weeks: 7, label: '7 semanas seguidas',    icon: '🔁' },
-  { weeks: 8, label: '8 semanas (2 meses)',   icon: '📆' }
+  { weeks: 1, label: 'No, solo esta fecha',  icon: '📅' },
+  { weeks: 2, label: '2 semanas seguidas',   icon: '🔁' },
+  { weeks: 3, label: '3 semanas seguidas',   icon: '🔁' },
+  { weeks: 4, label: '4 semanas (1 mes)',     icon: '📆' },
+  { weeks: 5, label: '5 semanas seguidas',   icon: '🔁' },
+  { weeks: 6, label: '6 semanas seguidas',   icon: '🔁' },
+  { weeks: 7, label: '7 semanas seguidas',   icon: '🔁' },
+  { weeks: 8, label: '8 semanas (2 meses)',  icon: '📆' }
 ];
 
 const API_URL = 'https://script.google.com/macros/s/AKfycbyKcbtvvwv_gK0AD6hx5GhdbNwevVOc-8go65ST0Ew3yqwDdqtSqyMjybKPR0KeDnkicg/exec';
@@ -1022,7 +974,6 @@ let state = {
   selDate: null,
   selTime: null,
   selWeeks: 1,
-  // availability panel state
   availPanelOpen: false,
   availPanelLoaded: false
 };
@@ -1060,27 +1011,26 @@ function buildGroupList() {
 }
 
 async function selectGroup(g) {
-  state.group        = g;
-  state.calYear      = new Date().getFullYear();
-  state.calMonth     = new Date().getMonth();
-  state.bookedDates  = new Set();
-  state.bookedSlots  = {};
-  state.selDate      = null;
-  state.selTime      = null;
-  state.selWeeks     = 1;
+  state.group            = g;
+  state.calYear          = new Date().getFullYear();
+  state.calMonth         = new Date().getMonth();
+  state.bookedDates      = new Set();
+  state.bookedSlots      = {};
+  state.selDate          = null;
+  state.selTime          = null;
+  state.selWeeks         = 1;
   state.availPanelOpen   = false;
   state.availPanelLoaded = false;
 
   document.documentElement.style.setProperty('--group-color', g.bg);
-  document.documentElement.style.setProperty('--group-fg', g.fg);
+  document.documentElement.style.setProperty('--group-fg',    g.fg);
   document.getElementById('legendAvail').style.background = g.bg;
   document.getElementById('headerSub').textContent        = g.label;
   document.getElementById('headerSub').style.color        = g.fg;
 
-  // Reset panel UI
   document.getElementById('availNudgeWrap').classList.remove('visible');
   document.getElementById('availPanel').classList.remove('visible');
-  document.getElementById('availPanelRows').innerHTML = '';
+  document.getElementById('availPanelRows').innerHTML     = '';
   document.getElementById('availPanelEmpty').style.display = 'none';
 
   goTo(2);
@@ -1161,7 +1111,7 @@ function renderCalendar() {
 
   DIAS_ES.forEach(d => {
     const cell = document.createElement('div');
-    cell.className  = 'cal-dow';
+    cell.className   = 'cal-dow';
     cell.textContent = d;
     grid.appendChild(cell);
   });
@@ -1175,10 +1125,10 @@ function renderCalendar() {
   let availableCount = 0;
 
   for (let d = 1; d <= lastDay.getDate(); d++) {
-    const date    = new Date(state.calYear, state.calMonth, d);
-    const dateStr = toDateStr(date);
-    const isPast  = date < today;
-    const isToday = date.getTime() === today.getTime();
+    const date     = new Date(state.calYear, state.calMonth, d);
+    const dateStr  = toDateStr(date);
+    const isPast   = date < today;
+    const isToday  = date.getTime() === today.getTime();
     const isBooked = state.bookedDates.has(dateStr);
 
     const cell = document.createElement('button');
@@ -1198,10 +1148,9 @@ function renderCalendar() {
     grid.appendChild(cell);
   }
 
-  // Show the nudge button only when this month has no available days left.
-  // Reset panel state when re-rendering (month change or group change).
-  const nudgeWrap = document.getElementById('availNudgeWrap');
-  const panel     = document.getElementById('availPanel');
+  // Show nudge when no available days remain in this month.
+  const nudgeWrap       = document.getElementById('availNudgeWrap');
+  const panel           = document.getElementById('availPanel');
   const monthFullyBooked = availableCount === 0;
 
   if (monthFullyBooked) {
@@ -1215,9 +1164,8 @@ function renderCalendar() {
 }
 
 function changeMonth(dir) {
-  // Close and reset the panel on month change so it re-checks the new month.
   document.getElementById('availPanel').classList.remove('visible');
-  document.getElementById('availPanelRows').innerHTML = '';
+  document.getElementById('availPanelRows').innerHTML      = '';
   document.getElementById('availPanelEmpty').style.display = 'none';
   state.availPanelOpen   = false;
   state.availPanelLoaded = false;
@@ -1234,24 +1182,20 @@ async function toggleAvailPanel() {
   const panel = document.getElementById('availPanel');
 
   if (state.availPanelOpen) {
-    // Close
     panel.classList.remove('visible');
     state.availPanelOpen = false;
     return;
   }
 
-  // Open
   panel.classList.add('visible');
   state.availPanelOpen = true;
 
-  // Only fetch once per group+month
   if (state.availPanelLoaded) return;
 
   document.getElementById('availPanelLoading').style.display = 'block';
   document.getElementById('availPanelRows').innerHTML        = '';
   document.getElementById('availPanelEmpty').style.display  = 'none';
 
-  // Fetch availability for all OTHER groups in parallel
   const otherGroups = GROUPS.filter(g => g.id !== state.group.id);
 
   const results = await Promise.all(
@@ -1262,21 +1206,15 @@ async function toggleAvailPanel() {
         if (!res.ok) return null;
         const data = await res.json();
         if (!data || !Array.isArray(data.bookedDates)) return null;
-
-        // Find the next open date in the currently viewed month
         const nextOpen = findNextOpenDate(new Set(data.bookedDates), state.calYear, state.calMonth);
         return { group: g, nextOpen };
-      } catch (e) {
-        return null;
-      }
+      } catch (e) { return null; }
     })
   );
 
   document.getElementById('availPanelLoading').style.display = 'none';
 
-  // Filter to groups that actually have an open date this month
-  const open = results.filter(r => r && r.nextOpen);
-
+  const open    = results.filter(r => r && r.nextOpen);
   const rowsEl  = document.getElementById('availPanelRows');
   const emptyEl = document.getElementById('availPanelEmpty');
 
@@ -1296,7 +1234,6 @@ async function toggleAvailPanel() {
           Reservar →
         </button>
       `;
-      // Tapping Reservar → goes directly into that group's booking flow
       row.querySelector('.avail-book-btn').onclick = () => selectGroup(g);
       rowsEl.appendChild(row);
     });
@@ -1305,13 +1242,10 @@ async function toggleAvailPanel() {
   state.availPanelLoaded = true;
 }
 
-// Returns the first non-past, non-booked Date in the given year/month,
-// or null if the month is fully booked.
 function findNextOpenDate(bookedSet, year, month) {
   const today   = new Date();
   today.setHours(0, 0, 0, 0);
   const lastDay = new Date(year, month + 1, 0).getDate();
-
   for (let d = 1; d <= lastDay; d++) {
     const date    = new Date(year, month, d);
     const dateStr = toDateStr(date);
@@ -1321,13 +1255,11 @@ function findNextOpenDate(bookedSet, year, month) {
   return null;
 }
 
-// ── Rest of booking flow (unchanged) ───────────────────────────────────────
+// ── Booking flow (unchanged) ────────────────────────────────────────────────
 
 function selectDate(date, dateStr) {
   state.selDate = { date, dateStr };
-
-  const disp = formatDateDisplay(date);
-  document.getElementById('dateBannerText').textContent = disp;
+  document.getElementById('dateBannerText').textContent = formatDateDisplay(date);
 
   const booked = state.bookedSlots[dateStr] || [];
   const grid   = document.getElementById('timeGrid');
@@ -1352,9 +1284,8 @@ function selectDate(date, dateStr) {
 
 function selectTime(slot) {
   state.selTime = slot;
-  const d      = state.selDate;
-  const banner = `${formatDateDisplay(d.date)} — ${slot}`;
-  document.getElementById('recurBannerText').textContent = banner;
+  document.getElementById('recurBannerText').textContent =
+    `${formatDateDisplay(state.selDate.date)} — ${slot}`;
 
   const opts = document.getElementById('recurOpts');
   while (opts.firstChild) opts.removeChild(opts.firstChild);
@@ -1365,7 +1296,7 @@ function selectTime(slot) {
     btn.style.setProperty('--group-color', state.group.bg);
     btn.style.setProperty('--group-fg',    state.group.fg);
     btn.innerHTML = `<span class="recur-icon">${o.icon}</span> ${o.label}`;
-    btn.onclick = () => selectRecur(o.weeks);
+    btn.onclick   = () => selectRecur(o.weeks);
     opts.appendChild(btn);
   });
 
@@ -1374,10 +1305,8 @@ function selectTime(slot) {
 
 function selectRecur(weeks) {
   state.selWeeks = weeks;
-
-  const g       = state.group;
-  const d       = state.selDate;
-  const dateDisp = formatDateDisplay(d.date);
+  const g        = state.group;
+  const dateDisp = formatDateDisplay(state.selDate.date);
 
   const summary = document.getElementById('bookingSummary');
   summary.style.background = g.bg;
@@ -1415,8 +1344,8 @@ async function submitBooking() {
   if (!telefono) { showError('Por favor ingrese su número de teléfono.');     return; }
 
   const btn = document.getElementById('submitBtn');
-  btn.disabled   = true;
-  btn.innerHTML  = '<span class="spinner"></span>Enviando...';
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="spinner"></span>Enviando...';
 
   const payload = {
     action: 'book',
@@ -1434,7 +1363,7 @@ async function submitBooking() {
       result = { success: true };
     } else {
       const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-      result = await res.json();
+      result    = await res.json();
     }
 
     if (result.success) {
@@ -1490,17 +1419,15 @@ function goTo(step) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function goBack() {
-  if (state.step > 1) goTo(state.step - 1);
-}
+function goBack() { if (state.step > 1) goTo(state.step - 1); }
 
 function updateDots(step) {
   for (let i = 1; i <= 5; i++) {
     const dot = document.getElementById(`dot${i}`);
     if (!dot) continue;
-    if      (i < step) dot.className = 'step-dot done';
+    if      (i < step)  dot.className = 'step-dot done';
     else if (i === step) dot.className = 'step-dot active';
-    else dot.className = 'step-dot';
+    else                 dot.className = 'step-dot';
   }
   document.getElementById('stepDots').style.opacity = step === 6 ? '0' : '1';
 }
@@ -1509,9 +1436,8 @@ function toDateStr(date) {
   return `${date.getFullYear()}-${pad(date.getMonth()+1)}-${pad(date.getDate())}`;
 }
 
-function pad(n) { return String(n).padStart(2, '0'); }
-
-function capFirst(str) { return str.charAt(0).toUpperCase() + str.slice(1); }
+function pad(n)      { return String(n).padStart(2, '0'); }
+function capFirst(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
 
 function formatDateDisplay(date) {
   return `${capFirst(DIAS_LONG[date.getDay()])}, ${date.getDate()} de ${MESES_LONG[date.getMonth()]}`;
