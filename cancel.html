@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<!-- Comidas FV2 — cancel.html -->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a2a4a">
+  <title>Cancelar Reservación — Rama Fuquay-Varina 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --navy:   #1a2a4a;
+      --gold:   #c8a96e;
+      --light:  #f4f6fa;
+      --white:  #ffffff;
+      --gray:   #888;
+      --green:  #2e7d32;
+      --red:    #c0392b;
+      --red-bg: #fdf0f0;
+      --radius: 14px;
+      --shadow: 0 4px 24px rgba(26,42,74,0.13);
+    }
+
+    html, body { min-height: 100%; background: var(--light); font-family: 'DM Sans', sans-serif; color: var(--navy); }
+
+    .app { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--white); box-shadow: 0 0 40px rgba(0,0,0,0.08); }
+
+    .header { background: var(--navy); padding: 20px 20px 22px; }
+    .header-branch { color: rgba(200,169,110,0.7); font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+    .header-title  { color: var(--white); font-family: 'DM Serif Display', serif; font-size: 20px; }
+    .header-sub    { color: var(--gold); font-size: 12px; font-weight: 600; margin-top: 4px; min-height: 16px; }
+
+    .content { padding: 24px 16px 48px; }
+
+    /* ── Loading ── */
+    .loading-wrap { text-align: center; padding: 48px 16px; }
+    .loading-spinner {
+      display: inline-block; width: 28px; height: 28px;
+      border: 3px solid rgba(26,42,74,0.12); border-top-color: var(--navy);
+      border-radius: 50%; animation: spin 0.7s linear infinite; margin-bottom: 14px;
+    }
+    .loading-text { font-size: 14px; color: var(--gray); }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Error / info states ── */
+    .state-card {
+      border-radius: var(--radius); padding: 24px 20px; text-align: center; margin-bottom: 20px;
+    }
+    .state-icon  { font-size: 48px; display: block; margin-bottom: 12px; }
+    .state-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 8px; }
+    .state-msg   { font-size: 14px; color: var(--gray); line-height: 1.7; }
+
+    .state-card.error   { background: var(--red-bg); border: 1px solid #f0c0c0; }
+    .state-card.success { background: #f0f9f0; border: 1px solid #a8d5a0; }
+    .state-card.info    { background: var(--light); border: 1px solid #dde4f0; }
+
+    /* ── Booking summary ── */
+    .booking-card {
+      background: var(--navy); border-radius: var(--radius); padding: 16px 18px; margin-bottom: 20px;
+    }
+    .booking-card-label {
+      color: rgba(200,169,110,0.7); font-size: 10px; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
+    }
+    .booking-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 5px 0; border-bottom: 1px solid rgba(255,255,255,0.08); gap: 12px;
+    }
+    .booking-row:last-child { border-bottom: none; }
+    .booking-key { font-size: 12px; color: rgba(255,255,255,0.55); flex-shrink: 0; }
+    .booking-val { font-size: 14px; font-weight: 700; color: var(--white); text-align: right; }
+
+    /* ── Date selection ── */
+    .section-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+    .section-sub   { font-size: 13px; color: var(--gray); line-height: 1.6; margin-bottom: 16px; }
+
+    .date-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+
+    .date-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 14px 16px; border-radius: var(--radius);
+      border: 2px solid #dde4f0; background: var(--white);
+      cursor: pointer; transition: all 0.15s;
+    }
+    .date-item.selected { border-color: var(--red); background: var(--red-bg); }
+    .date-item.selected .date-check { background: var(--red); border-color: var(--red); }
+    .date-item.selected .date-check::after { opacity: 1; }
+
+    .date-check {
+      width: 22px; height: 22px; border-radius: 6px; border: 2px solid #dde4f0;
+      background: var(--light); flex-shrink: 0; position: relative; transition: all 0.15s;
+    }
+    .date-check::after {
+      content: '✓'; position: absolute; inset: 0; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 700; color: var(--white); opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .date-info { flex: 1; min-width: 0; }
+    .date-display { font-size: 15px; font-weight: 700; color: var(--navy); }
+    .date-time    { font-size: 12px; color: var(--gray); margin-top: 2px; }
+
+    /* ── Select all toggle ── */
+    .select-all-btn {
+      width: 100%; padding: 12px; border-radius: var(--radius);
+      border: 2px dashed #dde4f0; background: var(--white);
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600;
+      color: var(--navy); cursor: pointer; margin-bottom: 16px;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .select-all-btn:active { background: var(--light); }
+
+    /* ── Confirm button ── */
+    .cancel-btn {
+      width: 100%; padding: 16px; border: none; border-radius: var(--radius);
+      background: var(--red); color: var(--white); font-family: 'DM Sans', sans-serif;
+      font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 6px;
+      transition: opacity 0.15s, transform 0.12s;
+    }
+    .cancel-btn:active   { transform: scale(0.98); }
+    .cancel-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .back-link {
+      display: block; text-align: center; margin-top: 16px;
+      font-size: 14px; color: var(--gray); text-decoration: none;
+      padding: 12px;
+    }
+    .back-link:hover { color: var(--navy); }
+
+    /* ── Error box ── */
+    .error-box {
+      background: var(--red-bg); border: 1px solid #f0c0c0; border-radius: 10px;
+      padding: 12px 14px; color: var(--red); font-size: 13px; margin-bottom: 14px; display: none;
+    }
+    .error-box.visible { display: block; }
+
+    /* ── Spinner inline ── */
+    .spinner {
+      display: inline-block; width: 15px; height: 15px;
+      border: 2.5px solid rgba(255,255,255,0.4); border-top-color: var(--white);
+      border-radius: 50%; animation: spin 0.7s linear infinite;
+      vertical-align: middle; margin-right: 7px;
+    }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-branch">Rama Fuquay-Varina 2</div>
+    <div class="header-title">Cancelar Reservación</div>
+    <div class="header-sub" id="headerSub"></div>
+  </div>
+
+  <div class="content" id="mainContent">
+    <!-- Loading state -->
+    <div class="loading-wrap" id="loadingState">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Cargando su reservación...</div>
+    </div>
+
+    <!-- Error state -->
+    <div id="errorState" style="display:none">
+      <div class="state-card error">
+        <span class="state-icon">❌</span>
+        <div class="state-title">Enlace no válido</div>
+        <div class="state-msg" id="errorMsg">No se pudo cargar su reservación.</div>
+      </div>
+      <a class="back-link" href="index.html">← Volver a la página de reservaciones</a>
+    </div>
+
+    <!-- Already cancelled state -->
+    <div id="cancelledState" style="display:none">
+      <div class="state-card info">
+        <span class="state-icon">✅</span>
+        <div class="state-title">Ya cancelada</div>
+        <div class="state-msg">Esta reservación ya fue cancelada anteriormente.</div>
+      </div>
+      <a class="back-link" href="index.html">← Volver a la página de reservaciones</a>
+    </div>
+
+    <!-- Main cancel UI -->
+    <div id="cancelUI" style="display:none">
+      <div class="booking-card" id="bookingCard"></div>
+
+      <div class="section-title">Seleccione las fechas a cancelar</div>
+      <div class="section-sub">Puede cancelar una fecha específica o todas a la vez.</div>
+
+      <button class="select-all-btn" id="selectAllBtn" onclick="toggleSelectAll()">
+        Seleccionar todas las fechas
+      </button>
+
+      <div class="date-list" id="dateList"></div>
+
+      <div class="error-box" id="cancelError"></div>
+
+      <button class="cancel-btn" id="cancelBtn" onclick="confirmCancel()" disabled>
+        Cancelar fechas seleccionadas
+      </button>
+
+      <a class="back-link" href="index.html">← Volver sin cancelar</a>
+    </div>
+
+    <!-- Success state -->
+    <div id="successState" style="display:none">
+      <div class="state-card success">
+        <span class="state-icon">✅</span>
+        <div class="state-title">Cancelación confirmada</div>
+        <div class="state-msg" id="successMsg">Sus fechas han sido canceladas.</div>
+      </div>
+      <a class="back-link" href="index.html">← Volver a la página de reservaciones</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbyKcbtvvwv_gK0AD6hx5GhdbNwevVOc-8go65ST0Ew3yqwDdqtSqyMjybKPR0KeDnkicg/exec';
+
+let booking      = null;
+let selectedIds  = new Set();
+let allSelected  = false;
+
+const GROUP_LABELS = {
+  todos_misioneros: 'Todos los Misioneros',
+  todos_elderes:    'Todos los Élderes',
+  elderes_fv:       'Élderes FV',
+  elderes_garner:   'Élderes Garner',
+  hermanas:         'Hermanas',
+};
+
+window.addEventListener('DOMContentLoaded', async function() {
+  const token = getToken();
+
+  if (!token) {
+    showError('Este enlace no es válido o está incompleto.');
+    return;
+  }
+
+  try {
+    const res  = await fetch(API_URL + '?action=booking&token=' + encodeURIComponent(token) + '&t=' + Date.now(), { cache: 'no-store' });
+    const data = await res.json();
+
+    if (!data.success) {
+      if (data.error && data.error.includes('cancelada')) {
+        showCancelled();
+      } else {
+        showError(data.error || 'No se pudo cargar su reservación.');
+      }
+      return;
+    }
+
+    booking = data.booking;
+    renderCancelUI();
+
+  } catch (e) {
+    showError('Error de conexión. Por favor intente de nuevo.');
+  }
+});
+
+function getToken() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('token') || '';
+}
+
+function renderCancelUI() {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('cancelUI').style.display     = 'block';
+
+  const groupLabel = GROUP_LABELS[booking.groupId] || booking.groupLabel || booking.groupId;
+
+  document.getElementById('headerSub').textContent = 'Familia ' + booking.familyName;
+
+  document.getElementById('bookingCard').innerHTML =
+    '<div class="booking-card-label">Su reservación</div>' +
+    '<div class="booking-row"><span class="booking-key">Familia</span><span class="booking-val">' + escHtml(booking.familyName) + '</span></div>' +
+    '<div class="booking-row"><span class="booking-key">Grupo</span><span class="booking-val">'   + escHtml(groupLabel) + '</span></div>' +
+    '<div class="booking-row"><span class="booking-key">Hora</span><span class="booking-val">'    + escHtml(booking.time) + '</span></div>' +
+    '<div class="booking-row"><span class="booking-key">Fechas</span><span class="booking-val">'  + booking.events.length + ' fecha' + (booking.events.length !== 1 ? 's' : '') + '</span></div>';
+
+  const listEl = document.getElementById('dateList');
+  listEl.innerHTML = '';
+
+  booking.events.forEach(function(ev) {
+    const item = document.createElement('div');
+    item.className  = 'date-item';
+    item.dataset.id = ev.eventId;
+    item.innerHTML  =
+      '<div class="date-check"></div>' +
+      '<div class="date-info">' +
+        '<div class="date-display">' + escHtml(ev.dateDisplay) + '</div>' +
+        '<div class="date-time">' + escHtml(booking.time) + '</div>' +
+      '</div>';
+    item.onclick = function() { toggleDate(ev.eventId, item); };
+    listEl.appendChild(item);
+  });
+}
+
+function toggleDate(eventId, item) {
+  if (selectedIds.has(eventId)) {
+    selectedIds.delete(eventId);
+    item.classList.remove('selected');
+  } else {
+    selectedIds.add(eventId);
+    item.classList.add('selected');
+  }
+  updateCancelBtn();
+  syncSelectAllState();
+}
+
+function toggleSelectAll() {
+  allSelected = !allSelected;
+  selectedIds.clear();
+
+  document.querySelectorAll('.date-item').forEach(function(item) {
+    if (allSelected) {
+      selectedIds.add(item.dataset.id);
+      item.classList.add('selected');
+    } else {
+      item.classList.remove('selected');
+    }
+  });
+
+  document.getElementById('selectAllBtn').textContent = allSelected
+    ? 'Deseleccionar todas'
+    : 'Seleccionar todas las fechas';
+
+  updateCancelBtn();
+}
+
+function syncSelectAllState() {
+  const total    = booking.events.length;
+  const selCount = selectedIds.size;
+  allSelected    = selCount === total;
+  document.getElementById('selectAllBtn').textContent = allSelected
+    ? 'Deseleccionar todas'
+    : 'Seleccionar todas las fechas';
+}
+
+function updateCancelBtn() {
+  const btn   = document.getElementById('cancelBtn');
+  const count = selectedIds.size;
+  btn.disabled     = count === 0;
+  btn.textContent  = count === 0
+    ? 'Cancelar fechas seleccionadas'
+    : 'Cancelar ' + count + ' fecha' + (count !== 1 ? 's' : '') + ' seleccionada' + (count !== 1 ? 's' : '');
+}
+
+async function confirmCancel() {
+  if (selectedIds.size === 0) return;
+
+  const btn = document.getElementById('cancelBtn');
+  const err = document.getElementById('cancelError');
+
+  err.classList.remove('visible');
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="spinner"></span>Cancelando...';
+
+  try {
+    const res  = await fetch(API_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        action:   'cancel',
+        token:    getToken(),
+        eventIds: Array.from(selectedIds)
+      })
+    });
+    const data = await res.json();
+
+    if (!data.success) {
+      err.textContent = data.error || 'Error al cancelar. Por favor intente de nuevo.';
+      err.classList.add('visible');
+      btn.disabled  = false;
+      updateCancelBtn();
+      return;
+    }
+
+    const cancelledCount = data.cancelled || selectedIds.size;
+    const remaining      = data.remaining || 0;
+
+    let msg = cancelledCount + ' fecha' + (cancelledCount !== 1 ? 's' : '') + ' cancelada' + (cancelledCount !== 1 ? 's' : '') + ' correctamente.';
+    if (remaining > 0) {
+      msg += ' Le quedan ' + remaining + ' fecha' + (remaining !== 1 ? 's' : '') + ' activa' + (remaining !== 1 ? 's' : '') + '.';
+    } else {
+      msg += ' Su reservación ha sido cancelada por completo.';
+    }
+
+    document.getElementById('successMsg').textContent = msg;
+    document.getElementById('cancelUI').style.display    = 'none';
+    document.getElementById('successState').style.display = 'block';
+
+  } catch (e) {
+    err.textContent = 'Error de conexión. Por favor intente de nuevo.';
+    err.classList.add('visible');
+    btn.disabled  = false;
+    updateCancelBtn();
+  }
+}
+
+function showError(msg) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('errorMsg').textContent       = msg;
+  document.getElementById('errorState').style.display   = 'block';
+}
+
+function showCancelled() {
+  document.getElementById('loadingState').style.display   = 'none';
+  document.getElementById('cancelledState').style.display = 'block';
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
