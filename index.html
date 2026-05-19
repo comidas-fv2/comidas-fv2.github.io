@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- deploy refresh -->
+<!-- Comidas FV2 — index.html -->
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -404,8 +404,6 @@
       flex-shrink: 0;
     }
 
-    /* ── Availability nudge ────────────────────────────────────────────────── */
-
     .avail-nudge-wrap         { display: none; margin-bottom: 12px; }
     .avail-nudge-wrap.visible { display: block; }
 
@@ -520,8 +518,6 @@
 
     .avail-book-btn:active { opacity: 0.75; }
 
-    /* ── Time screen ───────────────────────────────────────────────────────── */
-
     .date-banner {
       background: var(--light);
       border-radius: var(--radius);
@@ -571,10 +567,6 @@
 
     .time-btn.taken::after { content: ' — Reservado'; font-size: 12px; }
 
-    /* ── Same-day call card ────────────────────────────────────────────────── */
-    /* Replaces a time slot that is within 1 hour or already passed today.     */
-    /* Informational only — no booking button.                                 */
-
     .time-call-card {
       width: 100%;
       padding: 13px 15px;
@@ -587,12 +579,7 @@
       text-align: left;
     }
 
-    .time-call-icon {
-      font-size: 18px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
-
+    .time-call-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
     .time-call-info { flex: 1; min-width: 0; }
 
     .time-call-slot {
@@ -607,8 +594,6 @@
       color: #7a6020;
       line-height: 1.5;
     }
-
-    /* ── Recurrence screen ─────────────────────────────────────────────────── */
 
     .recurring-title { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
 
@@ -646,8 +631,6 @@
     }
 
     .recur-icon { font-size: 20px; }
-
-    /* ── Booking summary & form ────────────────────────────────────────────── */
 
     .booking-summary {
       border-radius: var(--radius);
@@ -710,6 +693,62 @@
 
     textarea { resize: vertical; min-height: 75px; }
 
+    /* ── Safety screening question ─────────────────────────────────────────── */
+
+    .safety-card {
+      display: none;
+      background: #fff8e8;
+      border: 1.5px solid #e8d5a0;
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 18px;
+    }
+
+    .safety-card.visible { display: block; }
+
+    .safety-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #7a5a10;
+      margin-bottom: 6px;
+    }
+
+    .safety-card-desc {
+      font-size: 13px;
+      color: #7a6020;
+      line-height: 1.6;
+      margin-bottom: 14px;
+    }
+
+    .safety-pills { display: flex; gap: 10px; }
+
+    .safety-pill {
+      flex: 1;
+      padding: 12px 8px;
+      border-radius: 10px;
+      border: 2px solid #e8d5a0;
+      background: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      color: #7a5a10;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .safety-pill.selected-yes {
+      background: #2e7d32;
+      color: var(--white);
+      border-color: #2e7d32;
+    }
+
+    .safety-pill.selected-no {
+      background: #c0392b;
+      color: var(--white);
+      border-color: #c0392b;
+    }
+
     .submit-btn {
       width: 100%;
       padding: 17px;
@@ -739,10 +778,6 @@
 
     .error-box.visible { display: block; }
 
-    /* ── Racing family conflict notice ─────────────────────────────────────── */
-    /* Shown instead of a hard error when a date was just taken by             */
-    /* another family. Friendly, explains what happened, reloads calendar.     */
-
     .conflict-box {
       background: #fff8e8;
       border: 1px solid #e8d5a0;
@@ -756,8 +791,6 @@
     }
 
     .conflict-box.visible { display: block; }
-
-    /* ── Success screen ────────────────────────────────────────────────────── */
 
     .success-wrap { text-align: center; padding: 16px 0; }
     .success-icon { font-size: 64px; margin-bottom: 14px; display: block; }
@@ -880,7 +913,6 @@
         <button class="cal-nav-btn" id="nextMonth" onclick="changeMonth(1)">›</button>
       </div>
 
-      <!-- Availability nudge — above grid, visible without scrolling -->
       <div class="avail-nudge-wrap" id="availNudgeWrap">
         <button class="avail-nudge-btn" onclick="toggleAvailPanel()">
           🍽️ Aún hay misioneros sin comida este mes — ver disponibilidad
@@ -969,6 +1001,19 @@
       <textarea id="fNotas" placeholder="Instrucciones de entrega, alergias, etc."></textarea>
     </div>
 
+    <!-- Safety screening question — shown only when coordinator activates it -->
+    <div class="safety-card" id="safetyCard">
+      <div class="safety-card-title">🛡️ Pregunta de acompañante</div>
+      <div class="safety-card-desc">
+        Los misioneros que sirven actualmente incluyen personas de ambos sexos.
+        ¿Puede su familia recibir misioneros del sexo opuesto sin necesitar un acompañante adicional?
+      </div>
+      <div class="safety-pills">
+        <button class="safety-pill" id="safetyYes" onclick="selectSafety('yes')">✅ Sí</button>
+        <button class="safety-pill" id="safetyNo"  onclick="selectSafety('no')">❌ No</button>
+      </div>
+    </div>
+
     <button class="submit-btn" id="submitBtn" onclick="submitBooking()">
       Confirmar comida
     </button>
@@ -983,7 +1028,7 @@
       <div class="success-card" id="successCard"></div>
       <div class="success-note">
         Los misioneros les llamarán para confirmar antes de cada comida.<br><br>
-        Si necesita hacer cambios, comuníquese con Ave al<br>
+        Si necesita hacer cambios, comuníquese con la coordinadora al<br>
         <strong>(919) 538-0776</strong>
       </div>
     </div>
@@ -1006,7 +1051,6 @@ const TIME_SLOTS = [
   '7:00 pm','7:30 pm'
 ];
 
-// Full recurrence options — filtered at runtime based on actual availability.
 const RECUR_OPTIONS_ALL = [
   { weeks: 1, label: 'No, solo esta fecha',  icon: '📅' },
   { weeks: 2, label: '2 semanas seguidas',   icon: '🔁' },
@@ -1031,7 +1075,9 @@ let state = {
   selTime: null,
   selWeeks: 1,
   availPanelOpen: false,
-  availPanelLoaded: false
+  availPanelLoaded: false,
+  safetyScreeningEnabled: false,
+  canReceiveOpposite: ''
 };
 
 const MESES_ES   = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -1039,10 +1085,23 @@ const DIAS_ES    = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
 const DIAS_LONG  = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
 const MESES_LONG = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 
-window.addEventListener('DOMContentLoaded', () => {
+window.addEventListener('DOMContentLoaded', async () => {
   buildGroupList();
   updateDots(1);
+  await loadPublicSettings();
 });
+
+async function loadPublicSettings() {
+  try {
+    const res  = await fetch(API_URL + '?action=settings&t=' + Date.now(), { cache: 'no-store' });
+    const data = await res.json();
+    if (data.success) {
+      state.safetyScreeningEnabled = !!data.safetyScreeningEnabled;
+    }
+  } catch (e) {
+    // non-fatal — screening defaults to off
+  }
+}
 
 function buildGroupList() {
   const el = document.getElementById('groupList');
@@ -1075,6 +1134,7 @@ async function selectGroup(g) {
   state.selDate          = null;
   state.selTime          = null;
   state.selWeeks         = 1;
+  state.canReceiveOpposite = '';
   state.availPanelOpen   = false;
   state.availPanelLoaded = false;
 
@@ -1085,7 +1145,6 @@ async function selectGroup(g) {
   document.getElementById('headerSub').style.color        = g.fg;
 
   resetAvailPanel();
-
   goTo(2);
   hideCalendarWhileLoading();
 
@@ -1137,7 +1196,6 @@ function showCalendarContent() {
 }
 
 async function loadBooked() {
-  if (!API_URL || API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') return false;
   try {
     const url = `${API_URL}?action=booked&group=${encodeURIComponent(state.group.id)}&t=${Date.now()}`;
     const res  = await fetch(url, { method: 'GET', cache: 'no-store' });
@@ -1234,8 +1292,6 @@ function changeMonth(dir) {
   renderCalendar();
 }
 
-// ── Availability panel ──────────────────────────────────────────────────────
-
 async function toggleAvailPanel() {
   const panel = document.getElementById('availPanel');
 
@@ -1276,7 +1332,6 @@ async function toggleAvailPanel() {
   const open = results.filter(r => r && r.nextOpen);
 
   if (open.length === 0) {
-    // Every group is full — show brief notice then auto-advance to next month
     document.getElementById('availPanelAdvancing').style.display = 'block';
     state.availPanelLoaded = true;
     setTimeout(() => {
@@ -1320,12 +1375,6 @@ function findNextOpenDate(bookedSet, year, month) {
   return null;
 }
 
-// ── NEW: Count how many consecutive weeks are available from the selected date.
-// Used to filter the recurrence options so families never see options that
-// would fail due to already-booked future dates.
-// Week 1 = selected date (already confirmed open by the fact they tapped it).
-// Weeks 2–8 = selected date + 7, 14, 21… days — checked against bookedDates.
-
 function getMaxAvailableWeeks(selectedDate) {
   let maxWeeks = 1;
   for (let w = 2; w <= 8; w++) {
@@ -1336,9 +1385,6 @@ function getMaxAvailableWeeks(selectedDate) {
   }
   return maxWeeks;
 }
-
-// ── NEW: Parse a time slot string like "5:30 pm" into a Date on the given day.
-// Used to compare slot times against the current time for same-day bookings.
 
 function parseSlotTime(baseDate, slot) {
   const norm    = slot.trim().toLowerCase();
@@ -1353,8 +1399,6 @@ function parseSlotTime(baseDate, slot) {
   return result;
 }
 
-// ── Time slot screen ────────────────────────────────────────────────────────
-
 function selectDate(date, dateStr) {
   state.selDate = { date, dateStr };
   document.getElementById('dateBannerText').textContent = formatDateDisplay(date);
@@ -1362,12 +1406,11 @@ function selectDate(date, dateStr) {
   const booked      = state.bookedSlots[dateStr] || [];
   const grid        = document.getElementById('timeGrid');
   const isToday     = toDateStr(date) === toDateStr(new Date());
-  const oneHourFrom = new Date(Date.now() + 60 * 60 * 1000);  // now + 1 hour
+  const oneHourFrom = new Date(Date.now() + 60 * 60 * 1000);
 
   grid.innerHTML = '';
 
   TIME_SLOTS.forEach(slot => {
-    // Check if this slot is already taken by another booking
     if (booked.includes(slot)) {
       const btn = document.createElement('button');
       btn.textContent = slot;
@@ -1376,11 +1419,9 @@ function selectDate(date, dateStr) {
       return;
     }
 
-    // Same-day: check if this slot is within 1 hour from now (or already past)
     if (isToday) {
       const slotTime = parseSlotTime(date, slot);
       if (slotTime <= oneHourFrom) {
-        // Show a call-directly card instead of a booking button
         const card = document.createElement('div');
         card.className = 'time-call-card';
         card.innerHTML = `
@@ -1398,7 +1439,6 @@ function selectDate(date, dateStr) {
       }
     }
 
-    // Normal available slot
     const btn = document.createElement('button');
     btn.textContent = slot;
     btn.className   = 'time-btn avail';
@@ -1411,15 +1451,11 @@ function selectDate(date, dateStr) {
   goTo(3);
 }
 
-// ── Recurrence screen ───────────────────────────────────────────────────────
-
 function selectTime(slot) {
   state.selTime = slot;
   document.getElementById('recurBannerText').textContent =
     `${formatDateDisplay(state.selDate.date)} — ${slot}`;
 
-  // ── NEW: Filter recurrence options to only show available consecutive weeks.
-  // We already have bookedDates in memory — no API call needed.
   const maxWeeks = getMaxAvailableWeeks(state.selDate.date);
   const options  = RECUR_OPTIONS_ALL.filter(o => o.weeks <= maxWeeks);
 
@@ -1436,7 +1472,6 @@ function selectTime(slot) {
     opts.appendChild(btn);
   });
 
-  // Add a note if options were limited
   if (maxWeeks < 8) {
     const note = document.createElement('div');
     note.style.cssText = 'font-size:12px;color:var(--gray);text-align:center;padding:8px 4px;line-height:1.5;';
@@ -1462,11 +1497,32 @@ function selectRecur(weeks) {
     <div class="bs-row"><span class="bs-key">Semanas</span><span class="bs-val">${weeks === 1 ? 'Solo esta fecha' : `${weeks} semanas`}</span></div>
   `;
 
+  // Reset safety answer each time form screen is shown
+  state.canReceiveOpposite = '';
+  document.getElementById('safetyYes').className = 'safety-pill';
+  document.getElementById('safetyNo').className  = 'safety-pill';
+
+  // Show safety screening card if active
+  const safetyCard = document.getElementById('safetyCard');
+  if (state.safetyScreeningEnabled) {
+    safetyCard.classList.add('visible');
+  } else {
+    safetyCard.classList.remove('visible');
+  }
+
   const btn = document.getElementById('submitBtn');
   btn.style.background = g.bg;
   btn.style.color      = g.fg;
 
   goTo(5);
+}
+
+// ── Safety screening ────────────────────────────────────────────────────────
+
+function selectSafety(val) {
+  state.canReceiveOpposite = val;
+  document.getElementById('safetyYes').className = val === 'yes' ? 'safety-pill selected-yes' : 'safety-pill';
+  document.getElementById('safetyNo').className  = val === 'no'  ? 'safety-pill selected-no'  : 'safety-pill';
 }
 
 // ── Submit booking ──────────────────────────────────────────────────────────
@@ -1480,14 +1536,17 @@ async function submitBooking() {
     : digits.length === 11 && digits[0] === '1'
       ? `(${digits.slice(1,4)}) ${digits.slice(4,7)}-${digits.slice(7)}`
       : raw;
-  const email    = document.getElementById('fEmail').value.trim();
-  const notas    = document.getElementById('fNotas').value.trim();
+  const email  = document.getElementById('fEmail').value.trim();
+  const notas  = document.getElementById('fNotas').value.trim();
 
   document.getElementById('errorBox').classList.remove('visible');
   document.getElementById('conflictBox').classList.remove('visible');
 
   if (!nombre)   { showError('Por favor ingrese el apellido de su familia.'); return; }
   if (!telefono) { showError('Por favor ingrese su número de teléfono.');     return; }
+
+  // Safety screening is required if active — but not blocking (just captured)
+  // Families who don't answer are flagged in transfer check
 
   const btn = document.getElementById('submitBtn');
   btn.disabled  = true;
@@ -1500,27 +1559,19 @@ async function submitBooking() {
     date: state.selDate.dateStr,
     time: state.selTime,
     weeks: state.selWeeks,
-    nombre, telefono, email, notas
+    nombre, telefono, email, notas,
+    canReceiveOpposite: state.canReceiveOpposite
   };
 
   try {
-    let result;
-    if (!API_URL || API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
-      result = { success: true };
-    } else {
-      const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
-      result    = await res.json();
-    }
+    const res    = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const result = await res.json();
 
     if (result.success) {
       showSuccess(nombre, payload);
       return;
     }
 
-    // ── NEW: Racing families — date conflict handling ─────────────────────
-    // If the error indicates the date is no longer available, another family
-    // just booked it. Show a friendly explanation, reload the calendar in the
-    // background, and return them to the calendar screen automatically.
     const isConflict = result.error &&
       (result.error.includes('no está disponible') ||
        result.error.includes('ya no está disponible'));
@@ -1533,19 +1584,16 @@ async function submitBooking() {
       conflictBox.textContent = '⚠️ Otra familia reservó esa fecha justo antes. Recargando el calendario para que vea las fechas disponibles...';
       conflictBox.classList.add('visible');
 
-      // Reload availability and return to calendar after a short pause
       setTimeout(async () => {
         const reloaded = await loadBooked();
         if (reloaded) renderCalendar();
         goTo(2);
-        // Clear the conflict notice after navigating away
         setTimeout(() => { conflictBox.classList.remove('visible'); }, 300);
       }, 1800);
 
       return;
     }
 
-    // Generic error
     showError(result.error || 'Hubo un error. Intente de nuevo.');
     btn.disabled  = false;
     btn.innerHTML = 'Confirmar comida';
