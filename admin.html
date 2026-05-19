@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<!-- Comidas FV2 — admin.html -->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#1a2a4a">
+  <title>Panel de Coordinador — Rama Fuquay-Varina 2</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    :root {
+      --navy:   #1a2a4a;
+      --gold:   #c8a96e;
+      --steel:  #2e5f8a;
+      --light:  #f4f6fa;
+      --white:  #ffffff;
+      --gray:   #888;
+      --green:  #2e7d32;
+      --red:    #c0392b;
+      --red-bg: #fdf0f0;
+      --radius: 14px;
+      --shadow: 0 4px 24px rgba(26,42,74,0.13);
+    }
+
+    html, body { min-height: 100%; background: var(--light); font-family: 'DM Sans', sans-serif; color: var(--navy); }
+
+    .app { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--white); box-shadow: 0 0 40px rgba(0,0,0,0.08); }
+
+    /* ── Header ── */
+    .header { background: var(--navy); padding: 20px 20px 18px; }
+    .header-branch { color: rgba(200,169,110,0.7); font-size: 10px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 4px; }
+    .header-title  { color: var(--white); font-family: 'DM Serif Display', serif; font-size: 20px; }
+    .header-sub    { color: var(--gold); font-size: 12px; font-weight: 600; margin-top: 4px; min-height: 16px; }
+
+    /* ── Progress dots ── */
+    .steps { display: flex; gap: 4px; padding: 12px 20px 0; background: var(--navy); }
+    .step-dot { flex: 1; height: 3px; border-radius: 2px; background: rgba(255,255,255,0.18); transition: background 0.3s; }
+    .step-dot.active { background: var(--gold); }
+    .step-dot.done   { background: rgba(200,169,110,0.45); }
+    .steps-wrap { background: var(--navy); padding-bottom: 14px; }
+
+    /* ── Screens ── */
+    .screen { display: none; padding: 24px 16px 48px; animation: fadeIn 0.2s ease; }
+    .screen.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .screen-title { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
+    .screen-sub   { font-size: 13px; color: var(--gray); line-height: 1.6; margin-bottom: 20px; }
+
+    /* ── Fields ── */
+    .field { margin-bottom: 18px; }
+    label  { display: block; font-size: 14px; font-weight: 600; margin-bottom: 7px; }
+    label .opt { color: var(--gray); font-weight: 400; font-size: 12px; margin-left: 4px; }
+
+    input[type="text"], input[type="password"], input[type="tel"] {
+      width: 100%; padding: 14px 15px; border: 2px solid #dde4f0; border-radius: 12px;
+      font-family: 'DM Sans', sans-serif; font-size: 16px; color: var(--navy);
+      background: var(--light); outline: none; transition: border-color 0.2s;
+      -webkit-appearance: none;
+    }
+    input:focus { border-color: var(--navy); background: var(--white); }
+
+    /* ── Toggle switch ── */
+    .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: var(--light); border-radius: var(--radius); margin-bottom: 14px; }
+    .toggle-label { font-size: 14px; font-weight: 600; }
+    .toggle-desc  { font-size: 12px; color: var(--gray); margin-top: 2px; line-height: 1.4; }
+    .toggle { position: relative; width: 48px; height: 26px; flex-shrink: 0; margin-left: 12px; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; inset: 0; background: #ccc; border-radius: 26px; cursor: pointer; transition: background 0.2s; }
+    .toggle-slider::before { content: ''; position: absolute; height: 20px; width: 20px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: transform 0.2s; }
+    .toggle input:checked + .toggle-slider { background: var(--green); }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(22px); }
+
+    /* ── Radio pills ── */
+    .pill-row  { display: flex; gap: 8px; }
+    .pill-btn  {
+      flex: 1; padding: 12px 8px; border-radius: 10px; border: 2px solid #dde4f0;
+      background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 13px;
+      font-weight: 600; color: var(--navy); cursor: pointer; text-align: center;
+      transition: all 0.15s;
+    }
+    .pill-btn.selected { background: var(--navy); color: var(--gold); border-color: var(--navy); }
+
+    /* ── Missionary set cards ── */
+    .set-card { background: var(--light); border-radius: var(--radius); padding: 16px; margin-bottom: 14px; }
+    .set-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+    .set-card-title  { font-size: 14px; font-weight: 700; }
+    .set-remove-btn  { background: none; border: none; color: var(--red); font-size: 20px; cursor: pointer; padding: 0 4px; line-height: 1; }
+
+    .add-set-btn {
+      width: 100%; padding: 13px; border-radius: var(--radius); border: 2px dashed #dde4f0;
+      background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 14px;
+      font-weight: 600; color: var(--navy); cursor: pointer; transition: background 0.15s;
+    }
+    .add-set-btn:active { background: var(--light); }
+
+    /* ── Transfer check results ── */
+    .check-summary { background: var(--light); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px; }
+    .check-summary-title { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+    .check-stat { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; border-bottom: 1px solid #e8edf6; }
+    .check-stat:last-child { border-bottom: none; }
+    .check-stat-key { color: var(--gray); }
+    .check-stat-val { font-weight: 700; }
+
+    .flagged-list { margin-bottom: 16px; }
+    .flagged-item { background: #fff8e8; border: 1px solid #e8d5a0; border-radius: var(--radius); padding: 13px 15px; margin-bottom: 8px; }
+    .flagged-name  { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .flagged-detail { font-size: 12px; color: #7a5a10; line-height: 1.6; }
+    .flagged-no-email { color: var(--red); font-size: 11px; font-weight: 600; margin-top: 4px; }
+
+    .no-flags { background: #f0f9f0; border: 1px solid #a8d5a0; border-radius: var(--radius); padding: 16px; text-align: center; font-size: 14px; color: var(--green); font-weight: 600; margin-bottom: 16px; }
+
+    /* ── Buttons ── */
+    .primary-btn {
+      width: 100%; padding: 16px; border: none; border-radius: var(--radius);
+      background: var(--navy); color: var(--gold); font-family: 'DM Sans', sans-serif;
+      font-size: 16px; font-weight: 700; cursor: pointer; transition: opacity 0.15s, transform 0.12s;
+      margin-top: 6px;
+    }
+    .primary-btn:active   { transform: scale(0.98); }
+    .primary-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    .secondary-btn {
+      width: 100%; padding: 14px; border: 2px solid #dde4f0; border-radius: var(--radius);
+      background: var(--white); font-family: 'DM Sans', sans-serif; font-size: 15px;
+      font-weight: 600; color: var(--navy); cursor: pointer; margin-top: 10px;
+      transition: background 0.15s;
+    }
+    .secondary-btn:active { background: var(--light); }
+
+    .danger-btn {
+      width: 100%; padding: 16px; border: none; border-radius: var(--radius);
+      background: var(--red); color: var(--white); font-family: 'DM Sans', sans-serif;
+      font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 6px;
+      transition: opacity 0.15s;
+    }
+    .danger-btn:active   { opacity: 0.8; }
+    .danger-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Alerts ── */
+    .error-box { background: var(--red-bg); border: 1px solid #f0c0c0; border-radius: 10px; padding: 12px 14px; color: var(--red); font-size: 13px; margin-bottom: 14px; display: none; }
+    .error-box.visible { display: block; }
+
+    .info-box { background: #e8f4fd; border: 1px solid #b0d4f0; border-radius: 10px; padding: 12px 14px; color: #1a4a6a; font-size: 13px; margin-bottom: 14px; line-height: 1.6; }
+
+    /* ── Spinner ── */
+    .spinner { display: inline-block; width: 15px; height: 15px; border: 2.5px solid rgba(200,169,110,0.4); border-top-color: var(--gold); border-radius: 50%; animation: spin 0.7s linear infinite; vertical-align: middle; margin-right: 7px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Success ── */
+    .success-wrap { text-align: center; padding: 24px 0; }
+    .success-icon  { font-size: 56px; display: block; margin-bottom: 14px; }
+    .success-title { font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 8px; }
+    .success-msg   { font-size: 14px; color: var(--gray); line-height: 1.6; margin-bottom: 20px; }
+    .success-details { background: var(--light); border-radius: var(--radius); padding: 14px 16px; text-align: left; font-size: 13px; line-height: 1.8; }
+    .success-details strong { color: var(--navy); }
+
+    .home-link { display: inline-block; margin-top: 16px; padding: 13px 24px; border-radius: var(--radius); background: var(--navy); color: var(--gold); font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="app">
+
+  <div class="header">
+    <div class="header-branch">Rama Fuquay-Varina 2</div>
+    <div class="header-title">Panel de Coordinador</div>
+    <div class="header-sub" id="headerSub"></div>
+  </div>
+  <div class="steps-wrap">
+    <div class="steps" id="stepDots">
+      <div class="step-dot active" id="dot1"></div>
+      <div class="step-dot" id="dot2"></div>
+      <div class="step-dot" id="dot3"></div>
+      <div class="step-dot" id="dot4"></div>
+      <div class="step-dot" id="dot5"></div>
+    </div>
+  </div>
+
+  <!-- Screen 1: Password -->
+  <div class="screen active" id="s1">
+    <div class="screen-title">Acceso al panel</div>
+    <div class="screen-sub">Ingrese la contraseña de coordinador para continuar.</div>
+    <div class="error-box" id="pwError"></div>
+    <div class="field">
+      <label>Contraseña</label>
+      <input type="password" id="pwInput" placeholder="Contraseña" autocomplete="current-password">
+    </div>
+    <button class="primary-btn" id="pwBtn" onclick="submitPassword()">Entrar</button>
+  </div>
+
+  <!-- Screen 2: Coordinator info -->
+  <div class="screen" id="s2">
+    <div class="screen-title">Información del coordinador</div>
+    <div class="screen-sub">Esta información aparece en los correos y en la página de cancelación.</div>
+    <div class="error-box" id="coordError"></div>
+
+    <div class="field">
+      <label>Título</label>
+      <div class="pill-row" id="titlePills">
+        <button class="pill-btn selected" data-val="Hermana" onclick="selectTitle(this)">Hermana</button>
+        <button class="pill-btn"          data-val="Hermano" onclick="selectTitle(this)">Hermano</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Apellido</label>
+      <input type="text" id="coordLastName" placeholder="Ej: Campos">
+    </div>
+    <div class="field">
+      <label>Teléfono <span class="opt">(opcional — para referencia)</span></label>
+      <input type="tel" id="coordPhone" placeholder="(919) 000-0000">
+    </div>
+    <button class="primary-btn" onclick="goTo(3)">Continuar</button>
+  </div>
+
+  <!-- Screen 3: Missionary sets -->
+  <div class="screen" id="s3">
+    <div class="screen-title">Misioneros activos</div>
+    <div class="screen-sub">Cada bloque representa una companía activa. Agregue un bloque por cada companía que esté sirviendo ahora mismo.</div>
+    <div class="info-box" style="margin-bottom:16px">
+      💡 Solo agregue los misioneros que están sirviendo <strong>ahora mismo</strong>. En cada transferencia, actualice estos bloques con los nuevos misioneros.
+    </div>
+    <div class="error-box" id="setsError"></div>
+    <div id="setsList"></div>
+    <button class="add-set-btn" onclick="addSet()">+ Agregar otra companía</button>
+    <button class="primary-btn" style="margin-top:16px" onclick="validateSetsAndContinue()">Continuar</button>
+  </div>
+
+  <!-- Screen 4: Safety screening -->
+  <div class="screen" id="s4">
+    <div class="screen-title">Protección de transferencia</div>
+    <div class="screen-sub">Cuando está activa, la página de reservación pregunta a las familias si pueden recibir misioneros del sexo opuesto sin acompañante. Úsela solo durante transferencias.</div>
+
+    <div class="toggle-row">
+      <div>
+        <div class="toggle-label">Activar pregunta de acompañante</div>
+        <div class="toggle-desc">Se muestra en el formulario de reservación hasta que la desactive.</div>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="safetyToggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="info-box">
+      💡 Una vez que la congregación haya conocido a los nuevos misioneros en la reunión sacramental, regrese aquí y desactive esta opción.
+    </div>
+
+    <button class="primary-btn" onclick="validateScreeningAndContinue()">Continuar</button>
+  </div>
+
+  <!-- Screen 5: Transfer check -->
+  <div class="screen" id="s5">
+    <div class="screen-title">Verificación de transferencia</div>
+    <div class="screen-sub" id="transferSub">Revisando si alguna familia con reservación activa necesita ser notificada por el cambio de misioneros.</div>
+
+    <div class="error-box" id="transferError"></div>
+
+    <div id="transferLoading" style="text-align:center;padding:32px 0;display:none">
+      <div style="display:inline-block;width:28px;height:28px;border:3px solid rgba(26,42,74,0.15);border-top-color:var(--navy);border-radius:50%;animation:spin 0.7s linear infinite;margin-bottom:12px"></div>
+      <div style="font-size:14px;color:var(--gray)">Revisando reservaciones activas...</div>
+    </div>
+
+    <div id="transferResults" style="display:none">
+      <div class="check-summary" id="checkSummary"></div>
+      <div id="flaggedList"></div>
+      <div id="noFlagsMsg" class="no-flags" style="display:none">✅ No hay familias que requieran notificación. El cambio de misioneros no afecta ninguna reservación activa.</div>
+      <button class="danger-btn" id="sendEmailsBtn" onclick="sendTransferEmails()" style="display:none">Enviar notificaciones por correo</button>
+      <button class="primary-btn" id="saveAndFinishBtn" onclick="saveAndFinish()">Guardar configuración</button>
+    </div>
+  </div>
+
+  <!-- Screen 6: Success -->
+  <div class="screen" id="s6">
+    <div class="success-wrap">
+      <span class="success-icon">✅</span>
+      <div class="success-title">Configuración guardada</div>
+      <div class="success-msg">El sistema ha sido actualizado con la nueva configuración.</div>
+      <div class="success-details" id="successDetails"></div>
+      <a class="home-link" href="index.html">Ver página de reservaciones →</a>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API_URL = 'https://script.google.com/macros/s/AKfycbyKcbtvvwv_gK0AD6hx5GhdbNwevVOc-8go65ST0Ew3yqwDdqtSqyMjybKPR0KeDnkicg/exec';
+
+let state = {
+  password:               '',
+  coordinatorTitle:       'Hermana',
+  coordinatorLastName:    '',
+  coordinatorPhone:       '',
+  safetyScreeningEnabled: false,
+  missionarySets:         [],
+  transferResults:        null,
+  emailsSent:             false
+};
+
+let setCounter = 0;
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+
+window.addEventListener('DOMContentLoaded', function() {
+  updateDots(1);
+  document.getElementById('pwInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') submitPassword();
+  });
+});
+
+// ── Screen 1: Password ───────────────────────────────────────────────────────
+
+async function submitPassword() {
+  const pw  = document.getElementById('pwInput').value.trim();
+  const btn = document.getElementById('pwBtn');
+  const err = document.getElementById('pwError');
+
+  if (!pw) { showError(err, 'Por favor ingrese la contraseña.'); return; }
+
+  err.classList.remove('visible');
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="spinner"></span>Verificando...';
+
+  try {
+    const res = await post({ action: 'validatePassword', password: pw });
+    if (!res.success) {
+      showError(err, res.error || 'Contraseña incorrecta.');
+      btn.disabled  = false;
+      btn.innerHTML = 'Entrar';
+      return;
+    }
+
+    state.password = pw;
+
+    // Load existing config
+    const configRes = await get('adminConfig&password=' + encodeURIComponent(pw));
+    if (configRes.success && configRes.config) {
+      const c = configRes.config;
+      state.coordinatorTitle       = c.coordinatorTitle       || 'Hermana';
+      state.coordinatorLastName    = c.coordinatorLastName    || '';
+      state.coordinatorPhone       = c.coordinatorPhone       || '';
+      state.safetyScreeningEnabled = !!c.safetyScreeningEnabled;
+      state.missionarySets         = Array.isArray(c.missionarySets) ? c.missionarySets : [];
+    }
+
+    populateCoordinatorScreen();
+    populateSetsScreen();
+    document.getElementById('safetyToggle').checked = state.safetyScreeningEnabled;
+    document.getElementById('headerSub').textContent = state.coordinatorTitle + ' ' + state.coordinatorLastName;
+
+    btn.disabled  = false;
+    btn.innerHTML = 'Entrar';
+    goTo(2);
+
+  } catch (e) {
+    showError(err, 'Error de conexión. Intente de nuevo.');
+    btn.disabled  = false;
+    btn.innerHTML = 'Entrar';
+  }
+}
+
+// ── Screen 2: Coordinator ────────────────────────────────────────────────────
+
+function populateCoordinatorScreen() {
+  document.getElementById('coordLastName').value = state.coordinatorLastName;
+  document.getElementById('coordPhone').value    = state.coordinatorPhone;
+
+  document.querySelectorAll('#titlePills .pill-btn').forEach(function(btn) {
+    btn.classList.toggle('selected', btn.dataset.val === state.coordinatorTitle);
+  });
+}
+
+function selectTitle(btn) {
+  document.querySelectorAll('#titlePills .pill-btn').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+  state.coordinatorTitle = btn.dataset.val;
+}
+
+// ── Screen 3: Missionary sets ────────────────────────────────────────────────
+
+function populateSetsScreen() {
+  document.getElementById('setsList').innerHTML = '';
+  setCounter = 0;
+
+  if (state.missionarySets.length === 0) {
+    addSet();
+  } else {
+    state.missionarySets.forEach(function(s) { addSet(s); });
+  }
+}
+
+// FV2 has 3 companionship types: elderes_fv, elderes_garner, hermanas
+function addSet(existing) {
+  setCounter++;
+  const id   = 'set_' + setCounter;
+  const type = existing ? existing.type      : 'elderes_fv';
+  const lbl  = existing ? existing.label     : '';
+  const alg  = existing ? existing.allergies : '';
+
+  const card = document.createElement('div');
+  card.className = 'set-card';
+  card.id        = id;
+  card.innerHTML =
+    '<div class="set-card-header">' +
+      '<div class="set-card-title">Companía ' + setCounter + '</div>' +
+      (setCounter > 1 ? '<button class="set-remove-btn" onclick="removeSet(\'' + id + '\')">×</button>' : '') +
+    '</div>' +
+    '<div class="field">' +
+      '<label>Tipo de Companerismo</label>' +
+      '<div class="pill-row">' +
+        '<button class="pill-btn' + (type === 'elderes_fv'     ? ' selected' : '') + '" data-set="' + id + '" data-val="elderes_fv"     onclick="selectSetType(this)">Élderes FV</button>' +
+        '<button class="pill-btn' + (type === 'elderes_garner' ? ' selected' : '') + '" data-set="' + id + '" data-val="elderes_garner" onclick="selectSetType(this)">Élderes Garner</button>' +
+        '<button class="pill-btn' + (type === 'hermanas'       ? ' selected' : '') + '" data-set="' + id + '" data-val="hermanas"       onclick="selectSetType(this)">Hermanas</button>' +
+      '</div>' +
+    '</div>' +
+    '<div class="field">' +
+      '<label>Zona / Área <span class="opt">(opcional — para proximidad)</span></label>' +
+      '<input type="text" id="' + id + '_label" placeholder="Ej: Élderes Fuquay, Hermanas Garner" value="' + escHtml(lbl) + '">' +
+    '</div>' +
+    '<div class="field">' +
+      '<label>Alergias o restricciones alimentarias <span class="opt">(opcional)</span></label>' +
+      '<input type="text" id="' + id + '_allergies" placeholder="Ej: sin gluten, vegetariano" value="' + escHtml(alg) + '">' +
+    '</div>';
+
+  document.getElementById('setsList').appendChild(card);
+}
+
+function selectSetType(btn) {
+  const setId = btn.dataset.set;
+  document.querySelectorAll('[data-set="' + setId + '"]').forEach(function(b) { b.classList.remove('selected'); });
+  btn.classList.add('selected');
+}
+
+function removeSet(id) {
+  const el = document.getElementById(id);
+  if (el) el.remove();
+  renumberSets();
+}
+
+function renumberSets() {
+  document.querySelectorAll('.set-card').forEach(function(card, idx) {
+    const titleEl = card.querySelector('.set-card-title');
+    if (titleEl) titleEl.textContent = 'Companía ' + (idx + 1);
+  });
+}
+
+function collectSets() {
+  const sets = [];
+  document.querySelectorAll('.set-card').forEach(function(card) {
+    const id        = card.id;
+    const typeBtn   = card.querySelector('.pill-btn.selected');
+    const labelEl   = document.getElementById(id + '_label');
+    const allergyEl = document.getElementById(id + '_allergies');
+    sets.push({
+      type:      typeBtn     ? typeBtn.dataset.val    : 'elderes_fv',
+      label:     labelEl     ? labelEl.value.trim()   : '',
+      allergies: allergyEl   ? allergyEl.value.trim() : ''
+    });
+  });
+  return sets;
+}
+
+function validateSetsAndContinue() {
+  const err  = document.getElementById('setsError');
+  const sets = collectSets();
+  if (sets.length === 0) { showError(err, 'Agregue al menos una companía de misioneros.'); return; }
+  err.classList.remove('visible');
+  state.missionarySets = sets;
+  goTo(4);
+}
+
+// ── Screen 4: Safety screening ───────────────────────────────────────────────
+
+function validateScreeningAndContinue() {
+  state.safetyScreeningEnabled = document.getElementById('safetyToggle').checked;
+  runTransferCheck();
+  goTo(5);
+}
+
+// ── Screen 5: Transfer check ─────────────────────────────────────────────────
+
+async function runTransferCheck() {
+  document.getElementById('transferLoading').style.display  = 'block';
+  document.getElementById('transferResults').style.display  = 'none';
+  document.getElementById('transferError').classList.remove('visible');
+
+  try {
+    const res = await post({
+      action:         'runTransferCheck',
+      password:       state.password,
+      missionarySets: state.missionarySets,
+      sendEmails:     false
+    });
+
+    document.getElementById('transferLoading').style.display = 'none';
+
+    if (!res.success) {
+      showError(document.getElementById('transferError'), res.error || 'Error al verificar.');
+      document.getElementById('transferResults').style.display = 'block';
+      return;
+    }
+
+    state.transferResults = res;
+    renderTransferResults(res);
+    document.getElementById('transferResults').style.display = 'block';
+
+  } catch (e) {
+    document.getElementById('transferLoading').style.display = 'none';
+    showError(document.getElementById('transferError'), 'Error de conexión al verificar transferencias.');
+    document.getElementById('transferResults').style.display = 'block';
+  }
+}
+
+function renderTransferResults(res) {
+  const flagged      = res.flagged         || [];
+  const emailsAvail  = res.emailsAvailable || 0;
+  const noEmailCount = res.noEmailCount    || 0;
+
+  document.getElementById('checkSummary').innerHTML =
+    '<div class="check-summary-title">Resumen de verificación</div>' +
+    '<div class="check-stat"><span class="check-stat-key">Familias que requieren atención</span><span class="check-stat-val">' + flagged.length + '</span></div>' +
+    '<div class="check-stat"><span class="check-stat-key">Se puede notificar por correo</span><span class="check-stat-val">' + emailsAvail + '</span></div>' +
+    '<div class="check-stat"><span class="check-stat-key">Contactar manualmente (sin correo)</span><span class="check-stat-val">' + noEmailCount + '</span></div>';
+
+  const listEl = document.getElementById('flaggedList');
+  listEl.innerHTML = '';
+
+  if (flagged.length === 0) {
+    document.getElementById('noFlagsMsg').style.display    = 'block';
+    document.getElementById('sendEmailsBtn').style.display = 'none';
+  } else {
+    document.getElementById('noFlagsMsg').style.display = 'none';
+
+    flagged.forEach(function(f) {
+      const item = document.createElement('div');
+      item.className = 'flagged-item';
+      item.innerHTML =
+        '<div class="flagged-name">Familia ' + escHtml(f.familyName) + '</div>' +
+        '<div class="flagged-detail">' +
+          'Grupo: ' + escHtml(f.groupId) + '<br>' +
+          'Fechas: ' + escHtml(f.dates)  + '<br>' +
+          'Hora: '   + escHtml(f.time)   + '<br>' +
+          'Motivo: ' + escHtml(f.reason) +
+        '</div>' +
+        (f.email
+          ? '<div style="font-size:11px;color:var(--green);margin-top:4px">✉ ' + escHtml(f.email) + '</div>'
+          : '<div class="flagged-no-email">⚠ Sin correo — contactar por teléfono: ' + escHtml(f.phone) + '</div>');
+      listEl.appendChild(item);
+    });
+
+    if (emailsAvail > 0) {
+      document.getElementById('sendEmailsBtn').style.display = 'block';
+      document.getElementById('sendEmailsBtn').textContent =
+        'Enviar notificaciones (' + emailsAvail + ' correo' + (emailsAvail > 1 ? 's' : '') + ')';
+    } else {
+      document.getElementById('sendEmailsBtn').style.display = 'none';
+    }
+  }
+}
+
+async function sendTransferEmails() {
+  const btn = document.getElementById('sendEmailsBtn');
+  const err = document.getElementById('transferError');
+
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="spinner"></span>Enviando...';
+
+  try {
+    const res = await post({
+      action:         'runTransferCheck',
+      password:       state.password,
+      missionarySets: state.missionarySets,
+      sendEmails:     true
+    });
+
+    if (!res.success) {
+      showError(err, res.error || 'Error al enviar correos.');
+      btn.disabled  = false;
+      btn.innerHTML = 'Enviar notificaciones';
+      return;
+    }
+
+    state.emailsSent = true;
+    btn.disabled  = true;
+    btn.innerHTML = '✅ Correos enviados';
+
+  } catch (e) {
+    showError(err, 'Error de conexión al enviar correos.');
+    btn.disabled  = false;
+    btn.innerHTML = 'Enviar notificaciones';
+  }
+}
+
+// ── Screen 5 → 6: Save config ────────────────────────────────────────────────
+
+async function saveAndFinish() {
+  const btn = document.getElementById('saveAndFinishBtn');
+  const err = document.getElementById('transferError');
+
+  const lastName = document.getElementById('coordLastName').value.trim();
+  if (!lastName) {
+    goTo(2);
+    showError(document.getElementById('coordError'), 'Por favor ingrese el apellido del coordinador.');
+    return;
+  }
+
+  state.coordinatorLastName = lastName;
+  state.coordinatorPhone    = document.getElementById('coordPhone').value.trim();
+
+  btn.disabled  = true;
+  btn.innerHTML = '<span class="spinner"></span>Guardando...';
+
+  try {
+    const res = await post({
+      action:                 'saveConfig',
+      password:               state.password,
+      coordinatorTitle:       state.coordinatorTitle,
+      coordinatorLastName:    state.coordinatorLastName,
+      coordinatorPhone:       state.coordinatorPhone,
+      safetyScreeningEnabled: state.safetyScreeningEnabled,
+      missionarySets:         state.missionarySets
+    });
+
+    if (!res.success) {
+      showError(err, res.error || 'Error al guardar.');
+      btn.disabled  = false;
+      btn.innerHTML = 'Guardar configuración';
+      return;
+    }
+
+    renderSuccess();
+    goTo(6);
+
+  } catch (e) {
+    showError(err, 'Error de conexión al guardar.');
+    btn.disabled  = false;
+    btn.innerHTML = 'Guardar configuración';
+  }
+}
+
+function renderSuccess() {
+  const typeLabels = { elderes_fv: 'Élderes FV', elderes_garner: 'Élderes Garner', hermanas: 'Hermanas' };
+  const sets = state.missionarySets.map(function(s, i) {
+    return '• Companía ' + (i+1) + ': ' + (typeLabels[s.type] || s.type) +
+           (s.label ? ' — ' + s.label : '') +
+           (s.allergies ? ' (Alergias: ' + s.allergies + ')' : '');
+  }).join('\n');
+
+  document.getElementById('successDetails').innerHTML =
+    '<strong>Coordinador:</strong> ' + state.coordinatorTitle + ' ' + state.coordinatorLastName + '<br>' +
+    '<strong>Verificación de acompañante:</strong> ' + (state.safetyScreeningEnabled ? '✅ Activa' : '⭕ Inactiva') + '<br>' +
+    '<strong>Misioneros:</strong><br>' + sets.replace(/\n/g, '<br>') +
+    (state.emailsSent ? '<br><br><strong>Correos de transferencia:</strong> ✅ Enviados' : '');
+}
+
+// ── Navigation ────────────────────────────────────────────────────────────────
+
+function goTo(step) {
+  document.querySelectorAll('.screen').forEach(function(s) { s.classList.remove('active'); });
+  document.getElementById('s' + step).classList.add('active');
+  updateDots(step);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateDots(step) {
+  for (var i = 1; i <= 5; i++) {
+    const dot = document.getElementById('dot' + i);
+    if (!dot) continue;
+    if      (i < step)   dot.className = 'step-dot done';
+    else if (i === step) dot.className = 'step-dot active';
+    else                 dot.className = 'step-dot';
+  }
+  document.getElementById('stepDots').style.opacity = step === 6 ? '0' : '1';
+}
+
+// ── API helpers ───────────────────────────────────────────────────────────────
+
+async function post(payload) {
+  const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify(payload) });
+  return await res.json();
+}
+
+async function get(action) {
+  const res = await fetch(API_URL + '?action=' + action + '&t=' + Date.now(), { cache: 'no-store' });
+  return await res.json();
+}
+
+// ── Utilities ─────────────────────────────────────────────────────────────────
+
+function showError(el, msg) {
+  el.textContent = msg;
+  el.classList.add('visible');
+}
+
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+</script>
+</body>
+</html>
