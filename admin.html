@@ -225,13 +225,13 @@
   <!-- Screen 3: Missionary sets -->
   <div class="screen" id="s3">
     <div class="screen-title">Misioneros activos</div>
-    <div class="screen-sub">Cada bloque representa una companía activa. Agregue un bloque por cada companía que esté sirviendo ahora mismo.</div>
+    <div class="screen-sub">Cada bloque representa una compañía activa. Agregue un bloque por cada compañía que esté sirviendo ahora mismo.</div>
     <div class="info-box" style="margin-bottom:16px">
-      💡 Solo agregue los misioneros que están sirviendo <strong>ahora mismo</strong>. En cada transferencia, actualice estos bloques con los nuevos misioneros.
+      💡 Configure solo las dos compañías actuales de Fuquay. Use el campo de restricciones para informar a los miembros sobre celiaquía, gluten u otras necesidades de los misioneros.
     </div>
     <div class="error-box" id="setsError"></div>
     <div id="setsList"></div>
-    <button class="add-set-btn" onclick="addSet()">+ Agregar otra companía</button>
+    <button class="add-set-btn" onclick="addSet()">+ Agregar otra compañía</button>
     <button class="primary-btn" style="margin-top:16px" onclick="validateSetsAndContinue()">Continuar</button>
   </div>
 
@@ -391,47 +391,93 @@ function populateSetsScreen() {
   document.getElementById('setsList').innerHTML = '';
   setCounter = 0;
 
-  if (state.missionarySets.length === 0) {
-    addSet();
+  const cleaned = cleanStoredSets(state.missionarySets);
+  state.missionarySets = cleaned;
+
+  if (cleaned.length === 0) {
+    addSet({ type: 'elderes_fv_1', label: '', allergies: '' });
+    addSet({ type: 'elderes_fv_2', label: '', allergies: '' });
   } else {
-    state.missionarySets.forEach(function(s) { addSet(s); });
+    cleaned.forEach(function(s) { addSet(s); });
   }
 }
 
-// FV2 has 3 companionship types: elderes_fv, elderes_garner, hermanas
+// Fuquay-only: ignore old Garner/Sisters records and keep at most two FV elder companionships.
+function cleanStoredSets(rawSets) {
+  const raw = Array.isArray(rawSets) ? rawSets : [];
+  const cleaned = [];
+  const used = {};
+
+  raw.forEach(function(s) {
+    const rawType = s && s.type ? s.type : '';
+    let type = '';
+
+    if (rawType === 'elderes_garner' || rawType === 'hermanas') return;
+
+    if (rawType === 'elderes_fv_1') type = 'elderes_fv_1';
+    else if (rawType === 'elderes_fv_2') type = 'elderes_fv_2';
+    else if (rawType === 'elderes_fv' || rawType === 'todos_elderes') {
+      type = used.elderes_fv_1 ? 'elderes_fv_2' : 'elderes_fv_1';
+    }
+
+    if (!type || used[type]) return;
+    used[type] = true;
+    cleaned.push({
+      type: type,
+      label: s.label || '',
+      allergies: s.allergies || ''
+    });
+  });
+
+  return cleaned.slice(0, 2);
+}
+
 function addSet(existing) {
+  if (!existing && document.querySelectorAll('.set-card').length >= 2) {
+    alert('Fuquay tiene solo dos compañías de élderes activas en este sistema.');
+    return;
+  }
+
   setCounter++;
-  const id   = 'set_' + setCounter;
-  const type = existing ? existing.type      : 'elderes_fv';
-  const lbl  = existing ? existing.label     : '';
-  const alg  = existing ? existing.allergies : '';
+  const id = 'set_' + setCounter;
+  const currentTypes = Array.from(document.querySelectorAll('.pill-btn.selected')).map(function(b) { return b.dataset.val; });
+  const defaultType = currentTypes.indexOf('elderes_fv_1') === -1 ? 'elderes_fv_1' : 'elderes_fv_2';
+  const type = existing ? normalizeSetType(existing.type, defaultType) : defaultType;
+  const lbl = existing ? existing.label : '';
+  const alg = existing ? existing.allergies : '';
 
   const card = document.createElement('div');
   card.className = 'set-card';
   card.id        = id;
   card.innerHTML =
     '<div class="set-card-header">' +
-      '<div class="set-card-title">Companía ' + setCounter + '</div>' +
-      (setCounter > 1 ? '<button class="set-remove-btn" onclick="removeSet(\'' + id + '\')">×</button>' : '') +
+      '<div class="set-card-title">Compañía ' + setCounter + '</div>' +
+      '<button class="set-remove-btn" onclick="removeSet(\'' + id + '\')">×</button>' +
     '</div>' +
     '<div class="field">' +
-      '<label>Tipo de Companerismo</label>' +
+      '<label>Compañía</label>' +
       '<div class="pill-row">' +
-        '<button class="pill-btn' + (type === 'elderes_fv'     ? ' selected' : '') + '" data-set="' + id + '" data-val="elderes_fv"     onclick="selectSetType(this)">Élderes FV</button>' +
-        '<button class="pill-btn' + (type === 'elderes_garner' ? ' selected' : '') + '" data-set="' + id + '" data-val="elderes_garner" onclick="selectSetType(this)">Élderes Garner</button>' +
-        '<button class="pill-btn' + (type === 'hermanas'       ? ' selected' : '') + '" data-set="' + id + '" data-val="hermanas"       onclick="selectSetType(this)">Hermanas</button>' +
+        '<button class="pill-btn' + (type === 'elderes_fv_1' ? ' selected' : '') + '" data-set="' + id + '" data-val="elderes_fv_1" onclick="selectSetType(this)">Élderes FV 1</button>' +
+        '<button class="pill-btn' + (type === 'elderes_fv_2' ? ' selected' : '') + '" data-set="' + id + '" data-val="elderes_fv_2" onclick="selectSetType(this)">Élderes FV 2</button>' +
       '</div>' +
     '</div>' +
     '<div class="field">' +
-      '<label>Zona / Área <span class="opt">(opcional — para proximidad)</span></label>' +
-      '<input type="text" id="' + id + '_label" placeholder="Ej: Élderes Fuquay, Hermanas Garner" value="' + escHtml(lbl) + '">' +
+      '<label>Nombres de los misioneros <span class="opt">(opcional)</span></label>' +
+      '<input type="text" id="' + id + '_label" placeholder="Ej: Elder Freeman, Elder Ferguson, Elder Ord" value="' + escHtml(lbl) + '">' +
     '</div>' +
     '<div class="field">' +
-      '<label>Alergias o restricciones alimentarias <span class="opt">(opcional)</span></label>' +
-      '<input type="text" id="' + id + '_allergies" placeholder="Ej: sin gluten, vegetariano" value="' + escHtml(alg) + '">' +
+      '<label>Restricciones alimentarias de los misioneros <span class="opt">(opcional)</span></label>' +
+      '<input type="text" id="' + id + '_allergies" placeholder="Ej: Un élder tiene celiaquía. Evitar gluten y contaminación cruzada." value="' + escHtml(alg) + '">' +
     '</div>';
 
   document.getElementById('setsList').appendChild(card);
+}
+
+function normalizeSetType(type, fallback) {
+  if (type === 'elderes_fv_1') return 'elderes_fv_1';
+  if (type === 'elderes_fv_2') return 'elderes_fv_2';
+  if (type === 'elderes_fv' || type === 'todos_elderes') return fallback || 'elderes_fv_1';
+  return fallback || 'elderes_fv_1';
 }
 
 function selectSetType(btn) {
@@ -449,7 +495,7 @@ function removeSet(id) {
 function renumberSets() {
   document.querySelectorAll('.set-card').forEach(function(card, idx) {
     const titleEl = card.querySelector('.set-card-title');
-    if (titleEl) titleEl.textContent = 'Companía ' + (idx + 1);
+    if (titleEl) titleEl.textContent = 'Compañía ' + (idx + 1);
   });
 }
 
@@ -461,7 +507,7 @@ function collectSets() {
     const labelEl   = document.getElementById(id + '_label');
     const allergyEl = document.getElementById(id + '_allergies');
     sets.push({
-      type:      typeBtn     ? typeBtn.dataset.val    : 'elderes_fv',
+      type:      typeBtn     ? typeBtn.dataset.val    : 'elderes_fv_1',
       label:     labelEl     ? labelEl.value.trim()   : '',
       allergies: allergyEl   ? allergyEl.value.trim() : ''
     });
@@ -472,7 +518,15 @@ function collectSets() {
 function validateSetsAndContinue() {
   const err  = document.getElementById('setsError');
   const sets = collectSets();
-  if (sets.length === 0) { showError(err, 'Agregue al menos una companía de misioneros.'); return; }
+  if (sets.length === 0) { showError(err, 'Agregue al menos una compañía de misioneros.'); return; }
+
+  const types = sets.map(function(s) { return s.type; });
+  const uniqueTypes = new Set(types);
+  if (uniqueTypes.size !== types.length) {
+    showError(err, 'Cada compañía debe ser diferente. Use Élderes FV 1 para una y Élderes FV 2 para la otra.');
+    return;
+  }
+
   err.classList.remove('visible');
   state.missionarySets = sets;
   goTo(4);
@@ -648,11 +702,11 @@ async function saveAndFinish() {
 }
 
 function renderSuccess() {
-  const typeLabels = { elderes_fv: 'Élderes FV', elderes_garner: 'Élderes Garner', hermanas: 'Hermanas' };
+  const typeLabels = { elderes_fv_1: 'Élderes FV 1', elderes_fv_2: 'Élderes FV 2', elderes_fv: 'Élderes FV 2', todos_elderes: 'Élderes FV 1' };
   const sets = state.missionarySets.map(function(s, i) {
-    return '• Companía ' + (i+1) + ': ' + (typeLabels[s.type] || s.type) +
+    return '• Compañía ' + (i+1) + ': ' + (typeLabels[s.type] || s.type) +
            (s.label ? ' — ' + s.label : '') +
-           (s.allergies ? ' (Alergias: ' + s.allergies + ')' : '');
+           (s.allergies ? ' (Restricciones: ' + s.allergies + ')' : '');
   }).join('\n');
 
   document.getElementById('successDetails').innerHTML =
