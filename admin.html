@@ -402,7 +402,7 @@ function populateSetsScreen() {
   }
 }
 
-// Fuquay-only: ignore old Garner/Sisters records and keep at most two FV elder companionships.
+// Fuquay-only: ignore old Garner records. Keep FV elders and Hermanas only when currently serving.
 function cleanStoredSets(rawSets) {
   const raw = Array.isArray(rawSets) ? rawSets : [];
   const cleaned = [];
@@ -412,10 +412,11 @@ function cleanStoredSets(rawSets) {
     const rawType = s && s.type ? s.type : '';
     let type = '';
 
-    if (rawType === 'elderes_garner' || rawType === 'hermanas') return;
+    if (rawType === 'elderes_garner') return;
 
     if (rawType === 'elderes_fv_1') type = 'elderes_fv_1';
     else if (rawType === 'elderes_fv_2') type = 'elderes_fv_2';
+    else if (rawType === 'hermanas') type = 'hermanas';
     else if (rawType === 'elderes_fv' || rawType === 'todos_elderes') {
       type = used.elderes_fv_1 ? 'elderes_fv_2' : 'elderes_fv_1';
     }
@@ -429,19 +430,19 @@ function cleanStoredSets(rawSets) {
     });
   });
 
-  return cleaned.slice(0, 2);
+  return cleaned.slice(0, 3);
 }
 
 function addSet(existing) {
-  if (!existing && document.querySelectorAll('.set-card').length >= 2) {
-    alert('Fuquay tiene solo dos compañías de élderes activas en este sistema.');
+  if (!existing && document.querySelectorAll('.set-card').length >= 3) {
+    alert('Fuquay puede tener hasta tres grupos activos aquí: Élderes FV 1, Élderes FV 2 y Hermanas.');
     return;
   }
 
   setCounter++;
   const id = 'set_' + setCounter;
   const currentTypes = Array.from(document.querySelectorAll('.pill-btn.selected')).map(function(b) { return b.dataset.val; });
-  const defaultType = currentTypes.indexOf('elderes_fv_1') === -1 ? 'elderes_fv_1' : 'elderes_fv_2';
+  const defaultType = currentTypes.indexOf('elderes_fv_1') === -1 ? 'elderes_fv_1' : (currentTypes.indexOf('elderes_fv_2') === -1 ? 'elderes_fv_2' : 'hermanas');
   const type = existing ? normalizeSetType(existing.type, defaultType) : defaultType;
   const lbl = existing ? existing.label : '';
   const alg = existing ? existing.allergies : '';
@@ -459,6 +460,7 @@ function addSet(existing) {
       '<div class="pill-row">' +
         '<button class="pill-btn' + (type === 'elderes_fv_1' ? ' selected' : '') + '" data-set="' + id + '" data-val="elderes_fv_1" onclick="selectSetType(this)">Élderes FV 1</button>' +
         '<button class="pill-btn' + (type === 'elderes_fv_2' ? ' selected' : '') + '" data-set="' + id + '" data-val="elderes_fv_2" onclick="selectSetType(this)">Élderes FV 2</button>' +
+        '<button class="pill-btn' + (type === 'hermanas' ? ' selected' : '') + '" data-set="' + id + '" data-val="hermanas" onclick="selectSetType(this)">Hermanas</button>' +
       '</div>' +
     '</div>' +
     '<div class="field">' +
@@ -476,6 +478,7 @@ function addSet(existing) {
 function normalizeSetType(type, fallback) {
   if (type === 'elderes_fv_1') return 'elderes_fv_1';
   if (type === 'elderes_fv_2') return 'elderes_fv_2';
+  if (type === 'hermanas') return 'hermanas';
   if (type === 'elderes_fv' || type === 'todos_elderes') return fallback || 'elderes_fv_1';
   return fallback || 'elderes_fv_1';
 }
@@ -523,7 +526,7 @@ function validateSetsAndContinue() {
   const types = sets.map(function(s) { return s.type; });
   const uniqueTypes = new Set(types);
   if (uniqueTypes.size !== types.length) {
-    showError(err, 'Cada compañía debe ser diferente. Use Élderes FV 1 para una y Élderes FV 2 para la otra.');
+    showError(err, 'Cada compañía debe ser diferente. No repita el mismo grupo. Use Élderes FV 1, Élderes FV 2 o Hermanas según corresponda.');
     return;
   }
 
