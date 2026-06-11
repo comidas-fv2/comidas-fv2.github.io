@@ -700,6 +700,29 @@
 
     textarea { resize: vertical; min-height: 75px; }
 
+
+    /* ── Missionary food information ─────────────────────────────────────── */
+    .food-info-card {
+      display: none;
+      background: #fff8e8;
+      border: 1.5px solid #e8d5a0;
+      border-radius: var(--radius);
+      padding: 14px 15px;
+      margin-bottom: 18px;
+      color: #7a5a10;
+      line-height: 1.55;
+      font-size: 13px;
+    }
+
+    .food-info-card.visible { display: block; }
+
+    .food-info-title {
+      font-weight: 700;
+      color: #7a5a10;
+      margin-bottom: 4px;
+      font-size: 14px;
+    }
+
     /* ── Safety screening question ─────────────────────────────────────────── */
 
     .safety-card {
@@ -896,7 +919,7 @@
   <!-- Screen 1: Group selection -->
   <div class="screen active" id="s1">
     <p class="screen-title">¿A quién desea invitar?</p>
-    <p class="screen-sub">Seleccione el grupo para ver las fechas disponibles.</p>
+    <p class="screen-sub">La mayoría de las familias puede escoger “Todos los Misioneros”. Use una compañía específica solo si necesita hacerlo.</p>
     <div class="group-list" id="groupList"></div>
   </div>
 
@@ -988,6 +1011,10 @@
   <!-- Screen 5: Contact form -->
   <div class="screen" id="s5">
     <div class="booking-summary" id="bookingSummary"></div>
+    <div class="food-info-card" id="foodInfoCard">
+      <div class="food-info-title">🍽️ Información importante de alimentos</div>
+      <div id="foodInfoText"></div>
+    </div>
     <div class="conflict-box" id="conflictBox"></div>
     <div class="error-box" id="errorBox"></div>
 
@@ -1005,7 +1032,7 @@
     </div>
     <div class="field">
       <label>Notas <span class="opt">(opcional)</span></label>
-      <textarea id="fNotas" placeholder="Instrucciones de entrega, alergias, etc."></textarea>
+      <textarea id="fNotas" placeholder="Instrucciones de entrega, dirección, código de entrada, etc."></textarea>
     </div>
 
     <!-- Safety screening question — shown only when coordinator activates it -->
@@ -1036,7 +1063,8 @@
       <div class="success-note">
         Los misioneros les llamarán para confirmar antes de cada comida.<br><br>
         Si necesita hacer cambios, comuníquese con la coordinadora al<br>
-        <strong>(919) 538-0776</strong>
+        <strong>(919) 538-0776</strong><br><br>
+        <a href="https://comidas-fv2.github.io/" style="display:block;background:var(--navy);color:var(--gold);padding:14px 18px;border-radius:14px;text-decoration:none;font-weight:700;text-align:center;">Programar otra comida</a>
       </div>
     </div>
   </div>
@@ -1045,11 +1073,9 @@
 
 <script>
 const GROUPS = [
-  { id: 'todos_misioneros', label: 'Todos los Misioneros', desc: 'Todos los misioneros juntos',  icon: 'icon-todos.png',    bg: '#134f5c', fg: '#a8dde5' },
-  { id: 'todos_elderes',    label: 'Todos los Élderes',    desc: 'Todos los Élderes juntos',      icon: 'icon-elderes.png',  bg: '#1a4a3a', fg: '#a8e0c8' },
-  { id: 'elderes_fv',       label: 'Élderes FV',           desc: 'Élderes de Fuquay-Varina',      icon: 'icon-elderes.png',  bg: '#1a2a4a', fg: '#c8a96e' },
-  { id: 'elderes_garner',   label: 'Élderes Garner',       desc: 'Élderes que viven en Garner',   icon: 'icon-elderes.png',  bg: '#2e5f8a', fg: '#e8d5a0' },
-  { id: 'hermanas',         label: 'Hermanas',             desc: 'Compañía de Hermanas',          icon: 'icon-hermanas.jpg', bg: '#6d2b4e', fg: '#e8b4cc' }
+  { id: 'todos_misioneros', label: 'Todos los Misioneros', desc: 'Ambas compañías de élderes de Fuquay', icon: 'icon-todos.png',   bg: '#134f5c', fg: '#a8dde5' },
+  { id: 'elderes_fv_1',     label: 'Élderes FV 1',         desc: '3 élderes — uno con celiaquía',       icon: 'icon-elderes.png', bg: '#1a2a4a', fg: '#c8a96e' },
+  { id: 'elderes_fv_2',     label: 'Élderes FV 2',         desc: '2 élderes',                           icon: 'icon-elderes.png', bg: '#2e5f8a', fg: '#e8d5a0' }
 ];
 
 const TIME_SLOTS = [
@@ -1084,7 +1110,8 @@ let state = {
   availPanelOpen: false,
   availPanelLoaded: false,
   safetyScreeningEnabled: false,
-  canReceiveOpposite: ''
+  canReceiveOpposite: '',
+  foodRestrictions: {}
 };
 
 const MESES_ES   = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -1104,6 +1131,7 @@ async function loadPublicSettings() {
     const data = await res.json();
     if (data.success) {
       state.safetyScreeningEnabled = !!data.safetyScreeningEnabled;
+      state.foodRestrictions = data.foodRestrictions || {};
     }
   } catch (e) {
     // non-fatal — screening defaults to off
@@ -1489,6 +1517,22 @@ function selectTime(slot) {
   goTo(4);
 }
 
+
+function updateFoodInfoNotice() {
+  const card = document.getElementById('foodInfoCard');
+  const text = document.getElementById('foodInfoText');
+  if (!card || !text || !state.group) return;
+
+  const info = (state.foodRestrictions && state.foodRestrictions[state.group.id]) || '';
+  if (info) {
+    text.textContent = info;
+    card.classList.add('visible');
+  } else {
+    text.textContent = '';
+    card.classList.remove('visible');
+  }
+}
+
 function selectRecur(weeks) {
   state.selWeeks = weeks;
   const g        = state.group;
@@ -1521,6 +1565,7 @@ function selectRecur(weeks) {
   btn.style.background = g.bg;
   btn.style.color      = g.fg;
 
+  updateFoodInfoNotice();
   goTo(5);
 }
 
