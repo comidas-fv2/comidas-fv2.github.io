@@ -1073,9 +1073,10 @@
 
 <script>
 const GROUPS = [
-  { id: 'todos_misioneros', label: 'Todos los Misioneros', desc: 'Ambas compañías de élderes de Fuquay', icon: 'icon-todos.png',   bg: '#134f5c', fg: '#a8dde5' },
+  { id: 'todos_misioneros', label: 'Todos los Misioneros', desc: 'Todos los misioneros activos de Fuquay', icon: 'icon-todos.png',   bg: '#134f5c', fg: '#a8dde5' },
   { id: 'elderes_fv_1',     label: 'Élderes FV 1',         desc: '3 élderes — uno con celiaquía',       icon: 'icon-elderes.png', bg: '#1a2a4a', fg: '#c8a96e' },
-  { id: 'elderes_fv_2',     label: 'Élderes FV 2',         desc: '2 élderes',                           icon: 'icon-elderes.png', bg: '#2e5f8a', fg: '#e8d5a0' }
+  { id: 'elderes_fv_2',     label: 'Élderes FV 2',         desc: '2 élderes',                           icon: 'icon-elderes.png', bg: '#2e5f8a', fg: '#e8d5a0' },
+  { id: 'hermanas',         label: 'Hermanas',             desc: 'Compañía de Hermanas',                 icon: 'icon-hermanas.jpg', bg: '#6d2b4e', fg: '#e8b4cc' }
 ];
 
 const TIME_SLOTS = [
@@ -1111,7 +1112,8 @@ let state = {
   availPanelLoaded: false,
   safetyScreeningEnabled: false,
   canReceiveOpposite: '',
-  foodRestrictions: {}
+  foodRestrictions: {},
+  activeGroups: null
 };
 
 const MESES_ES   = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -1120,9 +1122,9 @@ const DIAS_LONG  = ['domingo','lunes','martes','miércoles','jueves','viernes','
 const MESES_LONG = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
 
 window.addEventListener('DOMContentLoaded', async () => {
-  buildGroupList();
   updateDots(1);
   await loadPublicSettings();
+  buildGroupList();
 });
 
 async function loadPublicSettings() {
@@ -1132,6 +1134,7 @@ async function loadPublicSettings() {
     if (data.success) {
       state.safetyScreeningEnabled = !!data.safetyScreeningEnabled;
       state.foodRestrictions = data.foodRestrictions || {};
+      state.activeGroups = Array.isArray(data.activeGroups) ? data.activeGroups : null;
     }
   } catch (e) {
     // non-fatal — screening defaults to off
@@ -1141,7 +1144,8 @@ async function loadPublicSettings() {
 function buildGroupList() {
   const el = document.getElementById('groupList');
   el.innerHTML = '';
-  GROUPS.forEach(g => {
+  const visibleGroups = state.activeGroups ? GROUPS.filter(g => state.activeGroups.indexOf(g.id) !== -1) : GROUPS;
+  visibleGroups.forEach(g => {
     const btn = document.createElement('button');
     btn.className = 'group-btn';
     btn.style.background = g.bg;
